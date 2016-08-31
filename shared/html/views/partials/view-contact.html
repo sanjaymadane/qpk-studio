@@ -1,0 +1,111 @@
+<div id="view-contact-container" class="mycontact-dialog-box">
+    <div class="view-contact-container">
+        <div class="section fixed-section">
+            <div class="profile-pic">
+                <img src="{{contact.profile_pic}}" height="100%" width="100%" />
+            </div>
+            <div class="user-name">
+                <div class="full-name">
+                {{contact.title}} {{contact.fname}} {{contact.mname}} {{contact.lname}}
+                </div>
+                <div class="nickname">
+                    {{contact.nickname}}
+                </div>
+                <div class="icon-tray-list">
+                    <div class="action-buttons">
+                        <span>
+                            <i ng-class="{'icon-favorite-active':contact.is_favorite,'icon-favorite':!contact.is_favorite}"></i>
+                        </span>
+                        <span class="pipe">|</span>
+
+                        <span ng-click='show_view_group = !show_view_group;' class="group-icon-container">
+                            <i class="icon-group"></i>
+                        </span>
+                        <div id="groups-list" class="contact-group-list" ng-show="show_view_group" click-outside="show_view_group =!show_view_group">
+                            <h5>{{'GROUPS' | translate}}</h5>
+                            <hr class="dialog-horizontal-bar">
+                            <div class="group-list-content">
+                                <ul class="groups-checklist">
+                                    <li ng-repeat="x in groups track by $index" class="groups-checklist-item">
+                                        <label title="{{x.name}}">
+                                        <input type="checkbox" onClick="return false;" ng-checked="x.selected"/>  {{x.name}}</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <span class="pipe">|</span>
+
+                        <span classkey="favorites">
+                            <i ng-class="{'icon-private-active':contact.is_locked, 'icon-private':!contact.is_locked}"></i>
+                        </span>
+                    </div>
+                    <div class="btn-edit" ng-click="editContact()" title="{{'EDIT_CONTACT' | translate}}"></div>
+                </div>
+            </div>
+        </div>  
+        <div class="movable-section">
+            <div class="section" ng-if="contact.emails.length > 0 && !!contact.emails[0].value">
+                <div class="section-name">{{'EMAIL' | translate}}</div>
+                <div class="section-data" ng-repeat="email in contact.emails" ng-if="!!email.value">
+                    <div class="label-text">{{email.label | translate}}:</div>
+                    <div class="value"><a href="javascript:void(0);" ng-click="composeQMail(email.value)">{{email.value}}</a></div>
+                </div>
+            </div> 
+            <div class="section" ng-if="contact.phones.length > 0">
+                <div class="section-name">{{'PHONE' | translate}}</div>
+                <div class="section-data" ng-repeat="phone in contact.phones" ng-if="!!phone.value">
+                    <div class="label-text">{{phone.label | translate}}:</div>
+                    <div class="value"><span class="{{contryDialCodes[phone.country_code]}}" />{{phone.value}}</div>
+                </div>
+            </div>
+            <div class="section" ng-if="contact.im.length > 0 && !!contact.im[0].value">
+                <div class="section-name">{{'IM' | translate}}</div>
+                <div class="section-data" ng-repeat="im in contact.im" ng-if="!!im.value">
+                    <div class="label-text">{{im.label | translate}}:</div>
+                    <div class="value">{{im.value}}</div>
+                </div>
+            </div>
+            <div class="section" ng-if="contact.events.length > 0 && (!!contact.events[0].value || !!contact.events[1].value)">
+                <div class="section-name">{{'EVENTS' | translate}}</div>
+                <div class="section-data" ng-repeat="event in contact.events" ng-if="!!event.value">
+                    <div class="label-text">{{event.label | translate}}:</div>
+                    <div class="value">{{event.value}}</div>
+                </div>
+            </div>
+            <div class="section" ng-if="!!contact.company_name || !!contact.addresses[0].value || !!contact.addresses[1].value || contact.web_pages.length > 0 || !!contact.note || contact.attachments.length > 0">
+                <div class="section-name">{{'OTHER_DETAILS' | translate}}</div>
+                <div class="section-data" ng-if="!!contact.company_name">
+                    <div class="label-text">{{'COMPANY' | translate}}:</div>
+                    <div class="value">{{contact.company_name}}</div>
+                </div>
+                <div class="section-data" ng-if="!!contact.addresses[0].value">
+                    <div class="label-text">{{'HOME_ADDRESS' | translate}}:</div>
+                    <div class="value">{{contact.addresses[0].value}}</div>
+                </div>
+                <div class="section-data" ng-if="!!contact.addresses[1].value">
+                    <div class="label-text">{{'OFFICE_ADDRESS' | translate}}:</div>
+                    <div class="value">{{contact.addresses[1].value}}</div>
+                </div>
+                <div class="section-data" ng-repeat="web_page in contact.web_pages" ng-if="contact.web_pages.length > 0">
+                    <div class="label-text">{{'WEBPAGE' | translate}}:</div>
+                    <div class="value"><a href="{{web_page.value}}">{{web_page.value}}</a></div>
+                </div>
+                <div class="section-data" ng-if="!!contact.note">
+                    <div class="label-text">{{'NOTE' | translate}}:</div>
+                    <div class="value">{{contact.note}}</div>
+                </div>
+                <div class="section-data" ng-if="contact.attachments.length > 0">
+                    <div class="label-text">{{'ATTACHMENTS' | translate}}:</div>
+                    <div class="value">
+                        <div ng-repeat="attachmentFile in contact.attachments track by $index">
+                            <span class="attachments-label">{{attachmentFile.label}}</span>
+                            <a href="{{api_url}}download?type=attachment&authorization=bearer {{accessToken}}&filename={{attachmentFile.value}}" download="{{attachmentFile.label}}">
+                                <img src="resources/img/download_normal.png">
+                            </a>                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

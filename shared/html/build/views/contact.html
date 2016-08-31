@@ -1,0 +1,180 @@
+<div class="main-page">
+    <div class="contact-toolbar">
+        <div ng-hide="is_trash">
+            <button class="q-icon pull-left tool-icons"
+                    ng-class="{'icon-toolbar_delete_normal':!disable_batch_update,'icon-toolbar_delete_disable':disable_batch_update}"
+                    ng-disabled="disable_batch_update" ng-click="batchProcess('delete')"
+                    title="{{'DELETE_CONTACTS' | translate}}"></button>
+            <div class="button-container" ng-class="{'active': !disable_batch_update}">
+                <button class="q-icon pull-left tool-icons"
+                    ng-if="!menu.private" ng-class="{'icon-toolbar_favorites_normal':!disable_batch_update,'icon-toolbar_favorites_disable':disable_batch_update}"
+                    ng-disabled="disable_batch_update"></button>
+            </div>
+            <div class="favorite-options">
+                <ul class="groups-checklist">
+                    <li class="groups-checklist-item" ng-click="batchProcess('favorite')">{{'MAKE_FAVORITE' | translate}}</li>
+                    <li class="groups-checklist-item" ng-click="batchProcess('unfavorite')">{{'MAKE_UNFAVORITE' | translate}}</li>
+                </ul>
+            </div>
+            <button ng-if="!menu.private" class="q-icon pull-left tool-icons"
+                    ng-class="{'icon-toolbar_private_normal':!disable_batch_update,'icon-toolbar_private_disable':disable_batch_update}"
+                    ng-disabled="disable_batch_update" ng-click="batchProcess('private')" title="{{'LOCK_SELECTED_CONTACT' | translate}}"></button>
+            <button ng-if="menu.private" class="q-icon pull-left tool-icons"
+                    ng-class="{'icon-toolbar_private_off_normal':!disable_batch_update,'icon-toolbar_private_off_disable':disable_batch_update}"
+                    ng-disabled="disable_batch_update" ng-click="batchProcess('private')" title="{{'UNLOCK_SELECTED_CONTACT' | translate}}"></button>
+            <button ng-if="!menu.private" class="pull-left q-icon tool-icons"
+                    ng-class="{'icon-toolbar_group_normal':!disable_batch_update,'icon-toolbar_group_disable':disable_batch_update}"
+                    ng-disabled="disable_batch_update" ng-click='getGroupStatus();show_group=!show_group;'></button>
+            <div id="grid-groups-list" class="group-list" click-outside="closeGroupsDiv()" ng-show="show_group">
+                <h5>{{'ADD_CONTACTS_TO_GROUP' | translate}}</h5>
+                <hr class="dialog-horizontal-bar">
+                <div class="group-list-content">
+                    <ul class="groups-checklist">
+                        <li ng-repeat="x in groups track by $index" class="groups-checklist-item">
+                            <label for="{{x._id}}"><input type="checkbox" id="{{x._id}}" ng-click="onSelectGroup($event, x._id);"/>   {{x.name}}</label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="create-group" ng-show="showCreateGroup">
+                    <input type="text" placeholder="{{'PLACEHOLDER_NAME' | translate}}" ng-model="group.name" ng-keypress="($event.which === 13)?createGroup(group):0;($event.which === 13)?showCreateGroup=!showCreateGroup:0" autofocus>
+                    <button class="mycontacts-btn" ng-click="createGroup(group); showCreateGroup=!showCreateGroup">{{'SAVE' | translate}}</button>
+                </div>
+                <div class="create-group">
+                    <button class="mycontacts-btn" ng-click="showCreateGroup=!showCreateGroup;show_group=true;">{{'CREATE_NEW_GROUP' | translate}}</button>
+                </div>
+                <hr class="dialog-horizontal-bar">
+                <div class="group-list-footer">
+                    <button class="mycontacts-btn" ng-click="batchProcess('addToGroup');show_group=!show_group">{{'APPLY' | translate}}</button>
+                    <button class="mycontacts-btn" ng-click="show_group=!show_group">{{'CANCEL' | translate}}</button>
+                </div>
+            </div>
+
+            <button ng-if="!menu.private" class="q-icon icon-toolbar_merge_disable pull-left tool-icons" ng-disabled="disable_merge_batch_update"
+                    ng-class="{'icon-toolbar_merge_normal':!disable_merge_batch_update,'icon-toolbar_merge_disable':disable_merge_batch_update}"
+                    ng-click="batchMergeDuplicate()" title="{{'MERGE_CONTACT' | translate}}"></button>
+            <button class="q-icon icon-toolbar_export_disable pull-left tool-icons" ng-disabled="disable_batch_update"
+                    ng-class="{'icon-toolbar_export_normal':!disable_batch_update,'icon-toolbar_export_disable':disable_batch_update}"
+                    ng-click="showExportOption()" title="{{'EXPORT_CONTACT' | translate}}"></button>
+            <button ng-if="userDetails.is_nas_user" class="q-icon icon-toolbar_send_disable pull-left tool-icons" ng-disabled="disable_batch_update"
+                    ng-class="{'icon-toolbar_send_normal':!disable_batch_update,'icon-toolbar_send_disable':disable_batch_update}"
+                    ng-click="batchProcess('sendQMail')" title="{{'SEND_QMAIL' | translate}}"></button> 
+            <button class="q-icon icon-toolbar_sort_az_narmal pull-right tool-icons"
+                    ng-click="show_sort=!show_sort" title="{{'SORT_COLUMN' | translate}}"><span class="white-caret"></span></button>
+            <div class="grid-sort" ng-show="show_sort">
+                <div class="group-list-content">
+                    <ul class="groups-checklist">
+                        <li class="groups-checklist-item" ng-click="sortGrid('fname')">
+                            {{'SORT_FNAME' | translate}}&nbsp;&nbsp;&nbsp;<img ng-show="userData.sortby == 'fname'" src="resources/img/action_ok.png">
+                        </li>
+                        <li class="groups-checklist-item" ng-click="sortGrid('lname')">
+                            {{'SORT_LNAME' | translate}}&nbsp;&nbsp;&nbsp;<img ng-show="userData.sortby == 'lname'" src="resources/img/action_ok.png">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div ng-show="is_trash">
+            <button class="q-icon pull-left tool-icons icon-toolbar_delete_normal" ng-init="$parent.trash.show_trash_options=false" ng-mouseover="$parent.trash.show_trash_options=true;"
+                    ></button>
+            <div class="trash-options" ng-show="trash.show_trash_options" ng-mouseleave="trash.show_trash_options=false">
+                <ul class="groups-checklist">
+                    <li class="groups-checklist-item" ng-if="!disable_batch_update" ng-click="permanentDelete()">{{'PERMANENT_DELETE_CONTACTS' | translate}}</li>
+                    <li class="groups-checklist-item link-disabled" ng-if="disable_batch_update">{{'PERMANENT_DELETE_CONTACTS' | translate}}</li>
+                    <li class="groups-checklist-item" ng-click="permanentDelete(true)">{{'PERMANENT_DELETE_ALL_CONTACTS' | translate}}</li>
+                </ul>
+            </div>
+            <button class="q-icon pull-left tool-icons"
+                    ng-class="{'icon-toolbar_restore_normal':!disable_batch_update,'icon-toolbar_restore_disable':disable_batch_update}"
+                    ng-disabled="disable_batch_update" ng-click="batchProcess('restore')"
+                    title="{{'RESTORE_CONTACT' | translate}}"></button>
+        </div>
+    </div>
+    <div ng-if="userData.group_name" class="group-info">
+        <ng-form>
+            <span ng-show="!edit"><span id="group_name_span">{{userData.group_name}}</span> ({{totalContacts}})</span>
+            <span ng-show="boxShow">
+
+                <input id="group_name_text" ng-required type="text" ng-init="group.name=userData.group_name" ng-model="group.name" ng-keypress="($event.which === 13)?edit=!edit:0;($event.which === 13)?editGroup(group, userData.group_id):0;($event.which === 13)?boxShow=!boxShow:0;">
+                <!--<button type="button" ng-click="editGroup(group, userData.group_id);userData.group_name=group.name;boxShow=!boxShow">{{'BUTTON_SAVE' | translate}}</button>-->
+            </span>
+            <span ng-click="boxShow=!boxShow;edit=!edit;">
+                <button class="q-icon tool-icons" ng-class="{'icon-save':boxShow,'icon-grid-edit':!boxShow}"></button>
+            </span>
+            <span ng-click="deleteGroup(userData.group_id)">
+                <button class="q-icon tool-icons icon-grid-delete"></button>
+            </span>
+        </ng-form>
+    </div>
+    <div ng-if="!userData.group_name" class="group-info" id="column-chooser">
+        {{grid_heading}} ({{totalContacts}})
+        <div class="dropdown pull-right">
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{'ADD_REMOVE_COLUMN' | translate}}  <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li ng-repeat="column in config.colModel" ng-if="column.frozen != true && column.name != 'updated_on'">
+                    <a href="javascript:void(0)">
+                        <input type="checkbox" id="column_{{column.index}}" ng-click="hideShowGridColumn(column.index)" ng-checked="userConfiguration.grid_column_selected.indexOf(column.index) != -1" />
+                        <label for="column_{{column.index}}">{{config.colNames[$index]}}</label>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="grid-container">
+        <ng-jq-grid id-elm="contact-grid" config="config" userdata="userData"></ng-jq-grid>
+<!--        <button ng-click="saveState()">save</button>
+        <button ng-click="loadState()">load</button>-->
+<!--        <button class="q-icon icon-ic_add_contact pull-right add-contact-btn" ng-click="createContact()"
+                    title="{{'ADD_NEW_CONTACT' | translate}}"></button>-->
+        <!-- <div class="add-contact-btn icon-ic_add_contact pull-right" ng-click="createContact()"></div> -->
+    </div>
+    <div class="no-contacts">
+        <div class="grid-message-heading">
+            <img src="resources/img/no-contact.png"/>
+            <p>{{'NO_CONTACTS_HEADING' | translate}}</p>
+        </div>
+        <!--<div class="grid-message-desc">{{'NO_CONTACTS_DESC' | translate}}</div>-->
+    </div>
+    <div class="no-searched-contacts">
+        <div class="grid-message-heading">
+            <img src="resources/img/no-contact.png"/>
+            <p>{{'NO_CONTACTS_HEADING' | translate}}</p>
+        </div>
+        <div class="grid-message-desc">{{'NO_SEARCHED_CONTACT' | translate}}</div>
+    </div>
+    <div class="no-frequently-used-contacts">
+        <div class="grid-message-heading">
+            <img src="resources/img/no-contact.png"/>
+            <p>{{'NO_CONTACTS_HEADING' | translate}}</p>
+        </div>
+        <div class="grid-message-desc">{{'NO_CONTACTS_DESC' | translate}}</div>
+    </div>
+    <div class="no-favorites">
+        <div class="grid-message-heading">
+            <img src="resources/img/no-favorites.png"/>
+            <p>{{'NO_FAVORITES_HEADING' | translate}}</p>
+        </div>
+        <div class="grid-message-desc">{{'NO_FAVORITES_DESC' | translate}}</div>
+    </div>
+    <div class="no-privates">
+        <div class="grid-message-heading">
+            <img src="resources/img/no-private-contact.png"/>
+            <p>{{'NO_PRIVATE_CONTACTS_HEADING' | translate}}</p>
+        </div>
+        <div class="grid-message-desc">{{'NO_PRIVATE_CONTACTS_DESC' | translate}}</div>
+    </div>
+    <div class="empty-group">
+        <div class="grid-message-heading">
+            <img src="resources/img/no-group.png"/>
+            <p>{{'EMPTY_GROUP_HEADING' | translate}}</p>
+        </div>
+        <div class="grid-message-desc">{{'EMPTY_GROUP_DESC' | translate}}</div>
+    </div>
+    <div class="empty-trash">
+        <div class="grid-message-heading">
+            <img src="resources/img/no-contact.png"/>
+            <p>{{'EMPTY_TRASH_HEADING' | translate}}</p>
+        </div>
+        <div class="grid-message-desc">{{'EMPTY_TRASH_DESC' | translate}}</div>
+    </div>
+</div>
+<a class="add-contact-btn icon-ic_add_contact pull-right" ng-href="#/contacts/create"></a>

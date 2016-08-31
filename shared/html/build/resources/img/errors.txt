@@ -1,0 +1,2 @@
+[Tue Mar 08 2016 15:24:30 GMT+0800 (台北標準時間)] layer "btn_close.png 拷貝": Expected end of input but "\u62F7" found.
+[Tue Mar 08 2016 15:24:30 GMT+0800 (台北標準時間)] layer "ic_ready.png 拷貝": Expected end of input but "\u62F7" found.

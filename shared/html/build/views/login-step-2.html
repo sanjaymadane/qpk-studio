@@ -1,0 +1,16 @@
+<div class="page">
+    <div class="login-box">			
+        <div class="login_title"><strong>{{'MY_CONTACTS' | translate}}</strong></div >
+        <div class="login_form">
+            <input type="password" autocomplete="off" ng-keypress="($event.which === 13)?doLogin():0" placeholder="{{'SECURITY_CODE' | translate }}" ng-model="user.security_code" />
+        </div>
+        <div class="login_warning" ng-class="{'error': is_error}">{{error_message}}</div >
+        <div class="login_button">
+            <button type="button" title="{{'LOGIN_PROGRESS' | translate}}" class="btn" ng-click="doLoginStep2()" ng-disabled="user.security_code ==''">{{'LOGIN' | translate}}</button>
+        </div>	
+    </div>	
+    <div class="footer">
+        <strong>{{company_name}} </strong>
+        <span>{{version}}</span>
+    </div>
+</div>

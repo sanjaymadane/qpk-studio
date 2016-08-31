@@ -1,0 +1,53 @@
+<div class="header">
+  <ul class="nav nav-pills pull-right">
+    <li class="active"><a validation-submit="{onSubmit:'user.save()', formName:'demoForm'}" ng-click="user.save()">Submit</a></li>
+    <li class="active"><a ng-href="#">Reset</a></li>
+  </ul>
+  <h3 class="text-muted">angular ui form validation</h3>
+</div>
+
+<div class="jumbotron">
+    <div class="jColumn">
+        <h2>Example</h2>
+        <p>
+            Validations are displayed one at a time based on the order set in customValidations.js
+        </p>
+        <form novalidate name="demoForm">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" ng-model="user.username" validation-min-length="{template:'/views/errorTemplateOne.html', value:5}" validation-no-space="{message:'no space - custom message', value: true}" validation-field-required="true" validation-max-length="10" validation-no-special-chars="true" validation-dynamically-defined="locallyDefinedValidations">
+            <span class="help-block">username | validates no ones, no twos, min char = 5, max = 10, no special chars</span>
+
+            <label for="password">Password</label>
+            <input type="text" id="password" name="pwd" ng-model="user.password" validation-min-length="8" validation-one-number="true" validation-one-upper-case-letter="true" validation-one-lower-case-letter="true" validation-field-required="true" validation-no-space="true">
+            <span class="help-block">password | validates number required, lowercase required, uppercase...no space...</span>
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="text" id="confirmPassword" name="confirmPassword" passwordfieldid="password" ng-model="user.confirmPassword" validation-confirm-password="true" validation-field-required="true">
+            <br>
+            <a class="btn-primary" validation-submit="{onSubmit:'user.save()', formName:'demoForm'}" type="submit">Submit</a>
+        </form>
+    </div>
+
+    <div class="jColumn">
+        <h3>Multi form validation ability</h3>
+        <p>
+            Validations can be triggered for all forms or per form based on the form name(s).
+        </p>
+        <form novalidate name="demoFormTwo">
+            <label for="usernameTwo">
+                Alias
+            </label>
+            <input type="text" id="usernameTwo" name="usernameTwo" ng-model="user.usernameTwo" validation-field-required="true" validation-max-length="20" validation-no-special-chars="true">
+            <span class="help-block">usernameTwo | validates min char = 5, max = 10, no special chars</span>
+
+            <label for="lastFourSSN">
+                Last Four of SSN
+            </label>
+            <input type="text" id="lastFourSSN" name="lastFourSSN" ng-model="user.lastFourSSN" validation-only-numbers="true" validation-set-length="4">
+            <span class="help-block">SSN | validates only numbers</span>
+            <br>
+            <a class="btn-primary" validation-submit="{onSubmit:'user.save()', formName:'demoFormTwo'}" type="submit">Submit</a>
+        </form>
+    </div>
+
+
+</div>

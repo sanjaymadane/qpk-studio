@@ -1,0 +1,18 @@
+<div id="import_preview" class="mycontact-dialog-box">
+    <header>
+        Import Preview
+    </header>
+    <hr class="dialog-horizontal-bar">
+    <main class="dialog-content">
+        <p>{{'IMPORT_PREVIEW_HEADING' | translate}}</p>
+        <div class="grid-container" style="margin-left: 0;">
+            <ng-jq-grid id-elm="importPreviewGrid" grid-height="350" config="config"></ng-jq-grid>
+        </div>
+    </main>
+    <footer>
+        <div class="form-buttons">
+            <button type="button" ng-click="importPreview();closeThisDialog();">{{'ADD_THESE_CONTACTS' | translate}}</button>
+            <button type="button" ng-click="discardPreview();closeThisDialog();">{{'DISCARD_IMPORT_AGAIN' | translate}}</button>
+        </div>
+    </footer>
+</div>

@@ -1,0 +1,20 @@
+﻿<div class="manage-account-dialog">
+    <header>
+        {{'IMPORT_MANAGE_ACCOUNTS_HEADING' | translate}}
+    </header>
+    <hr class="dialog-horizontal-bar">
+    <div class="row">
+        <div class="col-lg-8 description">
+            {{'IMPORT_MANAGE_ACCOUNTS_DESC' | translate}}
+        </div>
+        <div class="col-lg-2 import-manage-accounts-add">
+            <input type="button" class="btn btn-default button-min-width" ng-click="googleLogin(); " value="{{'IMPORT_ADD_NEW_ACCOUNT' | translate}}" />
+        </div>
+        <div class="col-lg-2 import-manage-accounts-delete">
+            <input type="button" ng-disabled="!selected.gridSelectedRows.length" ng-click="syncDeleteAccountGoogleSync()" class="btn btn-default button-min-width " value="{{'IMPORT_DELETE_ACCOUNT' | translate}}" />
+        </div>
+    </div>
+    <div class="grid-container">
+        <grid-manage-account id-elm="manage-account" config="configForManageAccounts" ></grid-manage-account>
+    </div>
+</div>

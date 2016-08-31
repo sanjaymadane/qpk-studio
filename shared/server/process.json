@@ -1,0 +1,10 @@
+{
+  "apps" : [{
+    "name"       : "api",
+    "script"     : "./app.js",
+    "out_file"    : "/tmp/api.log",
+    "log_date_format" : "MM/DD/YYYY HH:mm:ss",
+    "instances"  : 1,
+    "exec_mode"  : "cluster"
+  }]
+}

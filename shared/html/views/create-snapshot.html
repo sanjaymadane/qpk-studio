@@ -1,0 +1,38 @@
+<style type="text/css">
+    .field-name{
+        width: 30% !important;
+    }
+    .field-value input{
+        width: 100% !important;
+    }
+    footer div.form-buttons{
+        margin-right: 10px !important;
+    }
+</style>
+<div id="create-snapshot" class="mycontact-dialog-box create-snapshot">
+    <header>
+        {{'CREATE_NEW_SNAPSHOT' | translate}}
+    </header>
+    <hr class="dialog-horizontal-bar">
+    <main class="dialog-content">
+        <loading></loading>
+        <div class="mycontact-fields">
+            <div class="field-block" >
+                <div  class="field-name">
+                    {{'SNAPSHOT_NAME' | translate}}:
+                </div> 
+
+                <div class="field-value floatL">
+                    <input type="text" id="snapshot_name" name="snapshot_name" ng-model="snapshot.name" ng-init="snapshot.name=defaultSnapshotName" />
+                </div>
+                <div class="clear"></div> 
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="form-buttons">
+            <button type="submit" ng-click="takeSnapshot(snapshot);">{{'CONFIRM' | translate}}</button>
+            <button type="button" class="cancel" ng-click="closeThisDialog();">{{'CANCEL' | translate}}</button>
+        </div>        
+    </footer>
+</div>

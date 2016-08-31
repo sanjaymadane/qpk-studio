@@ -1,0 +1,10 @@
+﻿<form id="grpimportForm" name="grpimportForm" novalidate>
+    <div class="select-file-for-import" ng-class="{ 'has-error' : grpimportForm.grpname.$invalid && !grpimportForm.grpname.$pristine }">
+        <h4>{{'IMPORT_GROUP_DESC'|translate}}</h4>
+        <h4 class="group-name-select-name">{{'IMPORT_CHOOSE_GROUP_NAME'|translate}}</h4>
+        <div><input style="width:400px;" autofocus id="grpname" name="grpname" type="text" ng-maxlength="100" placeholder="{{'IMPORT_ENTER_GROUP_NAME'|translate}}" ng-model="mapping.groupName" /></div>
+        <p ng-show="grpimportForm.grpname.$error.maxlength" class="help-block group-name-error">{{'GROUP_NAME_MAX_LENGTH' | translate}}</p>
+        <input class="btnClose btn btn-default button-min-width" type="button" value="{{'IMPORT_BACK'| translate}}" ng-click="gotopreviouspage();" />
+        <input class="btnNext  btn btn-default button-min-width" ng-disabled="!mapping.groupName" type="button" value="{{'IMPORT_NEXT'| translate}}" ng-click="setActiveTab.tab4 = true" />
+    </div>
+</form>

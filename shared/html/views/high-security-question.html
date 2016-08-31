@@ -1,0 +1,97 @@
+<div id="high-security-question" class="mycontact-dialog-box">
+    <header>
+        {{'SECURITY_QUESTION_HEADING' | translate}}
+    </header>
+    <hr class="dialog-horizontal-bar">
+    <form name="setSecurityForm" ng-submit="setSecurityPassword(setSecurityForm, security)" novalidate>
+        <main class="dialog-content">
+            <p>
+            {{'SECURITY_QUESTION_DESC' | translate}}
+            </p>
+            <div id="setHighSecurityPassword" ng-init="loadSecurityQuestions()" class="mycontact-fields">
+                <div class="field-block" ng-class="{ 'has-error' : setSecurityForm.high_security_password.$invalid && !setSecurityForm.high_security_password.$pristine }">
+                    <div  class="field-name">
+                        {{'ENTER_PASSWORD' | translate}}:
+                    </div> 
+
+                    <div class="field-value floatL">
+                        <input type="password" 
+                            name="high_security_password" 
+                            id="high_security_password" 
+                            ng-model="security.high_security_password" 
+                            ng-pattern="/^[a-zA-Z0-9]*$/" required ng-minlength="3" ng-maxlength="24" />
+                        <p ng-show="setSecurityForm.high_security_password.$error.required && !setSecurityForm.high_security_password.$pristine" class="help-block"> {{'PASSWORD_REQUIRED' | translate}}</p>
+                        <p ng-show="setSecurityForm.high_security_password.$error.minlength" class="help-block">{{'PASSWORD_MINLENGTH' | translate}}</p>
+                        <p ng-show="setSecurityForm.high_security_password.$error.maxlength" class="help-block">{{'PASSWORD_MAXLENGTH' | translate}}</p>
+                        <p ng-show="setSecurityForm.high_security_password.$error.pattern" class="help-block">{{'PASSWORD_PATTERN' | translate}}</p>
+                    </div>
+                    <div class="clear"></div> 
+                </div>
+
+                <div class="field-block" ng-class="{ 'has-error' : setSecurityForm.confirm_high_security_password.$invalid && !setSecurityForm.confirm_high_security_password.$pristine }">
+                    <div  class="field-name">
+                        {{'CONFIRM_PASSWORD' | translate}}: 
+                    </div> 
+
+                    <div class="field-value floatL">                                
+                        <input type="password" id="confirm_high_security_password" name="confirm_high_security_password" ng-model="security.confirm_high_security_password" confirm-password="security.high_security_password" />             
+                        <p ng-show="setSecurityForm.confirm_high_security_password.$error.noMatch" class="help-block"> {{'PASSWORD_CONFIRM' | translate}}</p>      
+                    </div>
+                    <div class="clear"></div> 
+                </div>
+
+                <div class="field-block" >
+                    <div  class="field-name">
+                        {{'SECURITY_QUESTION' | translate}}:
+                    </div> 
+
+                    <div class="field-value floatL">
+                        <select ng-model="security.security_question" ng-required="true">
+                            <option ng-repeat="question in questionList" value="{{question.name}}">{{question.name}}</option>
+                            <option value="custom_question">{{'CREATE_YOUR_OWN_QUESTION' | translate}}</option>
+                        </select>                    
+                    </div>
+                    <div class="clear"></div> 
+                </div>
+                
+                <div ng-if="security.security_question=='custom_question'" class="field-block" ng-class="{ 'has-error' : setSecurityForm.custom_question.$invalid && !setSecurityForm.custom_question.$pristine }">
+                    <div  class="field-name">
+                        {{'CUSTOM_QUESTION' | translate}}:
+                    </div> 
+
+                    <div class="field-value floatL">
+                        <input type="text" id="custom_question" name="custom_question" ng-maxlength="100" ng-model="security.custom_question" />
+                        <p ng-show="setSecurityForm.custom_question.$error.maxlength" class="help-block">{{'SECURITY_CUSTOM_QUESTION' | translate}}</p>
+                    </div>
+                    <div class="clear"></div> 
+                </div>
+
+                <div class="field-block" ng-class="{ 'has-error' : setSecurityForm.security_answer.$invalid && !setSecurityForm.security_answer.$pristine }">
+                    <div  class="field-name">
+                        {{'SECURITY_ANSWER' | translate}}:
+                    </div> 
+
+                    <div class="field-value floatL">
+                        <input type="password" 
+                            name="security_answer" 
+                            id="security_answer" 
+                            ng-model="security.security_answer" 
+                            ng-pattern="/^[a-zA-Z0-9]*$/"
+                            required ng-minlength="3" ng-maxlength="24" />
+                        <p ng-show="setSecurityForm.security_answer.$error.required && !setSecurityForm.security_answer.$pristine" class="help-block"> {{'SECURITY_ANSWER_REQUIRED' | translate}}</p>
+                        <p ng-show="setSecurityForm.security_answer.$error.minlength" class="help-block">{{'SECURITY_ANSWER_MINLENGTH' | translate}}</p>
+                        <p ng-show="setSecurityForm.security_answer.$error.maxlength" class="help-block">{{'SECURITY_ANSWER_MAXLENGTH' | translate}}</p>
+                        <p ng-show="setSecurityForm.security_answer.$error.pattern" class="help-block">{{'SECURITY_ANSWER_PATTERN' | translate}}</p>
+                    </div>
+                    <div class="clear"></div> 
+                </div>
+            </div>
+        </main>
+        <footer>
+            <div class="form-buttons">
+                <button type="submit" ng-disabled="setSecurityForm.$invalid || setSecurityForm.$pristine">{{'CONTINUE_USING_APP' | translate}}</button>
+                <button type="button" ng-click="closeThisDialog('cancel')" class="cancel">{{'CANCEL' | translate}}</button>
+            </div>        
+        </footer>
+    </form>
+</div>

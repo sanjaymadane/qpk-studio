@@ -1,0 +1,36 @@
+<div id="restore-delete" class="mycontact-dialog-box restore-delete">
+    <header>
+        {{'RESTORE_SNAPSHOT' | translate}}
+    </header>
+    <hr class="dialog-horizontal-bar">
+    <main class="dialog-content snapshot-list" ng-init="getSnapshotList()">
+    <loading></loading>
+        <table class="scroll">
+            <thead>
+                <tr>
+                    <th class="column-name">{{'SNAPSHOT_NAME' | translate}}</th>
+                    <th class="column-time">{{'SNAPSHOT_TIME' | translate}}</th>
+                    <th class="column-action"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="snapshot in snapshotList">
+                    <td class="column-name">
+                        {{snapshot.display_name}}
+                    </td>
+                    <td class="column-time">{{snapshot.created_on | date: "yyyy/MM/dd HH:mm:ss"}}</td>                    
+                    <td class="column-action">
+                        <a href="javascript:void(0)" ng-click="confirmSnapshotRestore($index)"><img src="resources/img/snap_restore.png" /></a>
+                        <a href="javascript:void(0)" ng-click="deleteSnapshot($index)"><img src="resources/img/um_delete.png" /></a>
+                    </td>
+                </tr>                
+            </tbody>
+            
+        </table>
+    </main>
+    <footer>
+        <div class="form-buttons">            
+            <button type="button" class="cancel" ng-click="closeThisDialog();">{{'CANCEL' | translate}}</button>
+        </div>        
+    </footer>
+</div>

@@ -1,0 +1,175 @@
+<div id="duplicate-merge" class="main-page">    
+    <div class="top-navication">
+        <div class="left tabs-container">
+            <ul class="nav nav-tabs">
+                <li class="active"  ng-click="showButton='merge'; findDuplicates()"><a data-toggle="tab" href="javascript:void(0);#find-duplicates-tab">{{'FIND_DUPLICATES' | translate}}</a></li>
+                <li  ng-click="showButton='unmerge';getMergeHistory()"><a data-toggle="tab" href="javascript:void(0);#merge-history-tab">{{'MERGE_HISTORY' | translate}}</a></li>
+            </ul>
+        </div>
+        <div class="global-action right">                         
+            <button ng-if="showButton=='merge' && duplicate_contacts.length > 0" ng-click="mergeDuplicate()" class="action-button">{{'MERGE_ALL' | translate}}</button>                
+            <button ng-if="showButton=='unmerge' && mergeHistory.length > 0" ng-click="restoreContact()" class="action-button">{{'UNMERGE_ALL' | translate}}</button>
+        </div>
+        <div class="clear"></div>       
+    </div>
+    
+
+    <div class="tab-content">        
+        <div id="find-duplicates-tab" class="tab-pane fade in active merge-data-content" ng-init="findDuplicates()" >
+            <div class="content-container" ng-show="duplicate_contacts.length > 0">
+                <main>
+                    <div class="duplicate-contact" ng-repeat="contact in duplicate_contacts">
+                        <div class="display-info" id="group-{{$index}}">
+                            <div class="common-info left">
+                                <div>                                
+                                    <img ng-src="{{pic_url}}{{mergeContact[$index].profile_pic}}" height="50" width="50" />                                
+                                </div>
+                                <label>{{contact._id.fname}} {{contact._id.lname}}</label>
+                            </div>
+                            
+                            <div class="duplicate-contact-data left">  
+                                <div  ng-repeat="duplicate_contact in contact.contacts" class="duplicate-info-data">                        
+                                    <div class="basic-info ">
+                                        <img src="{{pic_url}}{{duplicate_contact.profile_pic}}" height="20" width="20" />  
+                                        <span>{{duplicate_contact.fname}} {{duplicate_contact.lname}}</span>                                
+                                    </div>  
+                                    <div class="email-data ">                           
+                                        <ul class="merge-data">
+                                            <li ng-repeat="email in duplicate_contact.emails">
+                                                {{email.value}}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="phone-data ">
+                                        <ul class="merge-data left">
+                                            <li ng-repeat="phone in duplicate_contact.phones">
+                                                {{phone.value}}
+                                            </li>
+                                        </ul>
+                                        <span class="right marginL10P">
+                                            <input type="checkbox" ng-model="mergeContact[$parent.$index][duplicate_contact._id]"  ng-change="mergeArray( $parent.$index, duplicate_contact._id)">    
+                                        </span>
+                                        <div class="clear"></div>
+                                    </div>                           
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <div class="action-bar">                    
+                            <button ng-click="mergeDuplicate($index)" class="action-button">{{'MERGE' | translate}}</button>
+                        </div>
+                        
+                    </div>
+                </main>
+                <footer>
+                    <div class="pagination">
+                        <div class="custom-pagination-for-merge-contact">
+                            <span><img class="first-record" src="resources/img/first.png" ng-click="firstPage()" /></span>
+                            <span><img class="previous-record" ng-click="prevPage()" src="resources/img/previous.png" /></span>
+                            <span><label class="pagination-details-text">|&nbsp; {{'FIND_DUPLICATE_PAGE' | translate}}: {{paginationDetails}} &nbsp;|</label></span>
+                            <span><img ng-click="nextPage()" class="next-record" src="resources/img/next.png" /></span>
+                            <span><img class="last-record" src="resources/img/last.png" ng-click="lastPage()" /> |  &nbsp;  {{'FIND_DUPLICATE_DISPLAY_ITEM' | translate}}: {{paginationDisplayItem}}, {{'FIND_DUPLICATE_TOTAL' | translate}}: {{duplicateTotalItems}} &nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <span>{{'FIND_DUPLICATE_SHOW' | translate}}
+                                <select class="remove-border" ng-model="pagination.limit">
+                                    <option value="25" selected="selected">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="200">200</option>
+                                </select>
+                           {{'FIND_DUPLICATE_ITEMS' | translate}}
+                            </span>
+                        </div>
+                    </div>
+                    
+                </footer>
+            </div>
+
+            <div class="no-duplicate" ng-hide="duplicate_contacts.length > 0">
+                <div class="grid-message-heading no-duplicate-image">
+                    <h3 class="image-replacement">img</h3>
+                </div>
+                <div class="grid-message-desc no-duplicate-content">{{'NO_DUPLICATE' | translate}}</div>
+            </div>
+        </div>
+        
+
+        <div id="merge-history-tab" class="tab-pane fade merge-data-content">
+            <div class="content-container" ng-show="mergeHistory.length > 0">
+                <main>
+                    <div class="duplicate-contact" ng-repeat="contact in mergeHistory">
+                        <div class="display-info" id="group-{{$index}}">
+                            <div class="common-info left">
+                                <div>
+                                    <img src="{{pic_url}}{{contact.merged_contact.profile_pic}}" height="50" width="50" />
+                                </div>
+                                <label>{{contact.merged_contact.fname}} {{contact.merged_contact.lname}}</label>
+                            </div>
+                            
+                            <div class="duplicate-contact-data left">  
+                                <div  ng-repeat="merge_contact in contact.contacts" class="duplicate-info-data" ng-init="isDisabledCheckBox = (mergeHistory[$parent.$index].restore_ids.indexOf(merge_contact._id   ) > -1 ? true: false)">
+                                    <div class="basic-info">
+                                        <img src="{{pic_url}}{{merge_contact.profile_pic}}" height="20" width="20" />  
+                                        <span>{{merge_contact.fname}} {{merge_contact.lname}}</span>                                
+                                    </div>  
+                                    <div class="email-data">                           
+                                        <ul class="merge-data">
+                                            <li ng-repeat="email in merge_contact.emails">
+                                                {{email.value}}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="phone-data">
+                                        <ul class="merge-data left">
+                                            <li ng-repeat="phone in merge_contact.phones">
+                                                {{phone.value}}
+                                            </li>
+                                        </ul>
+                                        <span class="right marginL10P">                                            
+                                            <input ng-disabled="isDisabledCheckBox" type="checkbox" ng-model="unmergeContact[contact._id][merge_contact._id]">
+                                        </span>
+                                        <div class="clear"></div>
+                                    </div>                           
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <div class="action-bar">                    
+                            <button  ng-click="restoreContact(contact._id, $index)" class="action-button">{{'TEXT_UNMERGE' | translate}}</button>
+                        </div>
+                    </div>
+                </main>
+                <footer>
+                    <div class="pagination">
+                        <div class="custom-pagination-for-merge-contact">
+                            <span><img class="first-record" src="resources/img/first.png" ng-click="firstPageMerge()" /></span>
+                            <span><img class="previous-record" ng-click="prevPageMerge()" src="resources/img/previous.png" /></span>
+                            <span><label class="pagination-details-text">|&nbsp; {{'FIND_DUPLICATE_PAGE' | translate}}: {{paginationDetailsMerge}} &nbsp;|</label></span>
+                            <span><img ng-click="nextPageMerge()" class="next-record" src="resources/img/next.png" /></span>
+                            <span><img class="last-record" src="resources/img/last.png" ng-click="lastPageMerge()" /> |  &nbsp;  {{'FIND_DUPLICATE_DISPLAY_ITEM' | translate}}: {{paginationDisplayItemMerge}}, {{'FIND_DUPLICATE_TOTAL' | translate}}: {{mergeTotalItems}} &nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <span>
+                                {{'FIND_DUPLICATE_SHOW' | translate}}
+                                <select class="remove-border" ng-model="pagination.limitmerge">
+                                    <option value="25" selected="selected">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="200">200</option>
+                                </select>
+                                {{'FIND_DUPLICATE_ITEMS' | translate}}
+                            </span>
+                        </div>
+                    </div>            
+                </footer>
+            </div>
+
+            <div class="no-duplicate" ng-hide="mergeHistory.length > 0">
+                <div class="grid-message-heading no-duplicate-image">
+                    <h3 class="image-replacement">img</h3>
+                </div>
+                <div class="grid-message-desc no-duplicate-content">{{'NO_MERGE_HISTORY' | translate}}</div>
+            </div>
+        </div>
+    </div>
+    <loading></loading>
+</div>

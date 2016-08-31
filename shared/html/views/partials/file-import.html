@@ -1,0 +1,41 @@
+<div class="import-file-dialog" ng-controller="importFileCtrl">
+    <header>
+        <span><img class="header-icon" src="resources/img/ic_import.png"/></span>
+        {{'IMPORT_CONTACTS' | translate}}
+    </header>
+    <!--<hr class="dialog-horizontal-bar">-->
+    <uib-tabset>
+        <uib-tab index="0" active="setActiveTab.tab1" disable="true" class="select-file-tab">
+            <uib-tab-heading>
+                <i class="tab-icon select-file"></i><span class="tab-title">{{'IMPORT_SELECT_FILE' | translate}}</span>
+                <i class="tab-arrow-icon-next"></i>
+            </uib-tab-heading>
+            <ng-include src="'views/partials/import-select-file.html'"></ng-include>
+        </uib-tab>
+        <uib-tab index="1" active="setActiveTab.tab2" disable="true" class="preview-tab">
+            <uib-tab-heading>
+                <i class="tab-arrow-icon-prev"></i>
+                <i class="tab-icon preview-icon"></i><span class="tab-title">{{'IMPORT_PREVIEW' | translate}}</span>
+                <i class="tab-arrow-icon-next"></i>
+            </uib-tab-heading>
+            <ng-include ng-show="loadingFile" src="'views/partials/import-file-loader.html'"></ng-include>
+            <ng-include ng-show="!loadingFile" src="'views/partials/import-file-preview.html'"></ng-include>
+        </uib-tab>
+        <uib-tab index="2" active="setActiveTab.tab3" disable="true" class="groupname-tab">
+            <uib-tab-heading>
+                <i class="tab-arrow-icon-prev"></i>
+                <i class="tab-icon group-name-icon"></i><span class="tab-title">{{'IMPORT_GROUP_NAME' | translate}}</span>
+                <i class="tab-arrow-icon-next"></i>
+            </uib-tab-heading>
+            <ng-include src="'views/partials/import-file-group-name.html'"></ng-include>
+        </uib-tab>
+        <uib-tab index="3" active="setActiveTab.tab4" disable="true" class="finish-tab">
+            <uib-tab-heading>
+                <i class="tab-arrow-icon-prev"></i>
+                <i class="tab-icon finish-icon"></i><span class="tab-title">{{'IMPORT_FINISH' | translate}}</span>
+                <i class="tab-arrow-icon-next"></i>
+            </uib-tab-heading>
+            <ng-include src="'views/partials/import-file-finish.html'"></ng-include>
+        </uib-tab>
+    </uib-tabset>
+</div>

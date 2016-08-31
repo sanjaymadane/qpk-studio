@@ -1,0 +1,119 @@
+﻿<div id="about-us" class="mycontact-dialog-box help-page" ng-controller="MainCtrl">
+    <header>
+        {{'HELP' | translate}}
+    </header>
+    <div class="help-heading">
+        <img src="resources/img/help_icon.png"> &nbsp; {{'HELP_TITLE' | translate}}
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="help-side-menu">
+                <div id="option_tree" class="tree">
+                    <div class="item selected" id="option_name_p1_overview">
+                        <div class="option" title="Overview">
+                            <a href="javascript:void(0)" ng-click="scrollToTextHelpPage('divoverview', 'option_name_p1_overview');">{{'HELP_OVERVIEW'|translate}}</a>
+                        </div>
+                    </div>
+                    <div class="item" id="option_name_sys_requir">
+                        <div class="option" title="System Requirements">
+                            <a href="javascript:void(0)" ng-click="scrollToTextHelpPage('divsysrequirment', 'option_name_sys_requir');">{{'HELP_SYSTEM_REQUIRMENT'|translate}}</a>
+                        </div>
+                    </div>
+                    <div class="item" id="option_name_import_contact">
+                        <div class="option" title="Import Contact">
+                            <a href="javascript:void(0)" ng-click="scrollToTextHelpPage('divimportcontact', 'option_name_import_contact');">{{'HELP_IMPORT_CONTACTS'|translate}}</a>
+                        </div>
+                    </div>
+                    <div class="item" id="option_name_export">
+                        <div class="option" title="Export Contacts (CSV and vCARD)">
+                            <a href="javascript:void(0)" ng-click="scrollToTextHelpPage('divexportcontact', 'option_name_export');">{{'HELP_EXPORT_CONTACTS'|translate}}</a>
+                        </div>
+                    </div>
+                    <div class="item" id="option_name_manage">
+                        <div class="option" title="Manage">
+                            <a href="javascript:void(0)" ng-click="scrollToTextHelpPage('divmanagecontact', 'option_name_manage');">{{'HELP_MANAGE'|translate}}</a>
+                        </div>
+                    </div>
+                    <div class="item" id="option_name_sendmail">
+                        <div class="option" title="Send Mail via Qmail">
+                            <a href="javascript:void(0)" ng-click="scrollToTextHelpPage('divsendmailcontact', 'option_name_sendmail');">{{'HELP_SEND_MAIL'|translate}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 help-scrollbar" id="helpcontent">
+            <a id="divoverview"></a>
+            <h3 >{{'HELP_OVERVIEW'|translate}}</h3>
+            <hr />
+            <div>
+                <p>{{'HELP_OVERVIEW_DESC' | translate}}</p> 
+            </div>
+            <a id="divsysrequirment"></a>
+            <h3 class="top-padding">{{'HELP_SYSTEM_REQUIRMENT'|translate}}</h3>
+            <hr />
+            <div>
+                <p>{{'HELP_SYSTEM_REQUIRMENT_DESC1' | translate}}:</p>
+                <ul>
+                    <li>{{'HELP_SYSTEM_REQUIRMENT_DESC2' | translate}}</li>
+                    <li>{{'HELP_SYSTEM_REQUIRMENT_DESC3' | translate}}</li>
+                    <li>{{'HELP_SYSTEM_REQUIRMENT_DESC4' | translate}}</li>
+                </ul>
+            </div>
+            <a id="divimportcontact"></a>
+            <h3 class="top-padding">{{'HELP_IMPORT_CONTACTS'|translate}}</h3>
+            <hr />
+            <div >
+                <p>{{'HELP_IMPORT_DESC'|translate}}:</p>
+                <h4>{{'HELP_GOOGLE_IMPORT'|translate}}</h4>
+                <p>{{'HELP_GOOGLE_IMPORT_DESC' | translate}}</p>
+                <h4>{{'HELP_PHONEBOOK_IMPORT'|translate}}</h4>
+                <p>{{'HELP_PHONEBOOK_IMPORT_DESC' | translate}}:</p>
+                <ul>
+                    <li>{{'HELP_PHONEBOOK_IMPORT_ANDROID' | translate}}</li>
+                    <li>{{'HELP_PHONEBOOK_IMPORT_IOS' | translate}}</li>
+                </ul>
+                <h4>{{'HELP_PHONEBOOK_IMPORT_FILE' | translate}}</h4>
+                <p>{{'HELP_PHONEBOOK_IMPORT_FILE_DESC' | translate}}</p>
+            </div>
+            <a id="divexportcontact"></a>
+            <h3 class="top-padding">{{'HELP_EXPORT_CONTACTS'|translate}}</h3>
+            <hr />
+            <div>
+                <p>{{'HELP_EXPORT_CONTACTS_DESC1' | translate}}:</p>
+                <ul>
+                    <li>{{'HELP_EXPORT_CONTACTS_DESC2' | translate}}</li>
+                    <li>{{'HELP_EXPORT_CONTACTS_DESC3' | translate}}</li>
+                    <li>{{'HELP_EXPORT_CONTACTS_DESC4' | translate}}</li>
+                </ul>
+            </div>
+            <a id="divmanagecontact"></a>
+            <h3 class="top-padding">{{'HELP_MANAGE'|translate}}</h3>
+            <hr />
+            <div>
+                <p>{{'HELP_MANAGE_DESC' | translate}}:</p>
+                <h4>{{'HELP_MANAGE_FAV'|translate}}</h4>
+                <p>{{'HELP_MANAGE_FAV_DESC1' | translate}}<span class="icon-favorite"></span>{{'HELP_MANAGE_FAV_DESC2' | translate}}</p>
+                <h4>{{'HELP_MANAGE_FREQUENTLY_USED'|translate}}</h4>
+                <p>{{'HELP_MANAGE_FREQUENTLY_USED_DESC' | translate}}</p>
+                <h4>{{'HELP_MANAGE_GROUPS'|translate}}</h4>
+                <p>{{'HELP_MANAGE_GROUPS_DESC1' | translate}}<span class="icon-toolbar_group_active"></span>{{'HELP_MANAGE_GROUPS_DESC2' | translate}}</p>
+                <h4>{{'HELP_MANAGE_DUPLICATES'|translate}}</h4>
+                <p>{{'HELP_MANAGE_DUPLICATES_DESC1' | translate}}<span class="icon-toolbar_merge_active"></span>{{'HELP_MANAGE_DUPLICATES_DESC2' | translate}}</p>
+                <h4>{{'HELP_MANAGE_PRIVATE'|translate}}</h4>
+                <p>{{'HELP_MANAGE_PRIVATE_DESC1' | translate}}<span class="icon-toolbar_private_active"></span>{{'HELP_MANAGE_PRIVATE_DESC2' | translate}}</p>
+                <h4>{{'HELP_MANAGE_SNAPSHOT'|translate}}</h4>
+                <p>{{'HELP_MANAGE_SNAPSHOT_DESC' | translate}}</p>
+                <h4>{{'HELP_MANAGE_TRASH'|translate}}</h4>
+                <p>{{'HELP_MANAGE_TRASH_DESC1' | translate}}<span class="icon-um_delete_active"></span>{{'HELP_MANAGE_TRASH_DESC2' | translate}}</p>
+            </div>
+            <a id="divsendmailcontact"></a>
+            <h3 class="top-padding">{{'HELP_SEND_MAIL'|translate}}</h3>
+            <hr />
+            <div>
+                <p>{{'HELP_SEND_MAIL_DESC1' | translate}}<span class="icon-toolbar_send_disable"></span>
+                {{'HELP_SEND_MAIL_DESC2' | translate}}</p>
+            </div>
+        </div>
+    </div>
+</div>

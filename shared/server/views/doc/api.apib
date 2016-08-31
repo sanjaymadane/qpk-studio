@@ -1,0 +1,3124 @@
+FORMAT: 1A
+HOST: http://172.17.36.104:8080/mcsapi/api/v1
+
+# Qcontactz API documentation
+
+
+The Qcontactz backend API documentation, This API's are now under developing, so it may have changes or error/crash anytime. Feel free to contact backend development team.
+
+Default username and password for testing
+```http
+{
+    "username": "<NAS Username>",
+    "password": "<NAS Password>" // This should be ecrypted
+}
+```
+
+All API will return standard json result format as below:
+```http
+{
+  "status": <true/false>,
+  "status_code": <status_code>,
+  "data": { ... },
+  "message": <status_message>
+}
+```
+All status_code's are listed below:
+```http
+
+10000: 'Something went wrong, please try after some time'
+10001: 'Success'
+10002: 'No token provided'
+10003: 'Invalid access token'
+10004: 'Not permitted'
+10005: 'Invalid username or password'
+10006: 'Invalid usage of API, please check documentation for correct usage'
+10007: 'Failed to authenticate token'
+10008: 'High Security password cannot be empty.'
+10009: 'Wrong High Security password'
+10010: 'High Security Question and Answer cannot be blank'
+10011: 'Invalid Security Question and Answer'
+10012: 'Admin user cannot be deleted'
+10021: 'Trashed contact cannot be edited'
+10022: 'Count limit is being imposed'
+10023: 'No contacts to export'
+10024: 'Provide valid export type'
+10025: 'NAS details'
+10026: 'Error in getting details'
+10027: 'Application not installed yet'
+10028: 'Search need atleast 1 character.'
+10029: 'No valid field names to perform search operation'
+11000: 'Restore halted in the middle'
+10050: 'Group name already exists'
+11001: 'Please provide a valid transaction id',
+11002: 'No contacts present for this transaction',
+11003: 'Please provide a valid mapper',    
+11004: 'Error while mapping contacts',
+11005: 'Please provide a valid group name',
+11006: "Please provide delete contact status",
+11007: "Please provide temp contact list",
+11008: "Please provide a valid template name",
+11009: "Please provide a valid mapper",    
+11011: "Template inserted Successfully",
+11012: "Template with same name already exists",
+11013: "Template List"
+11014: "Please provide a valid NAS file upload type"
+11015: "Please provide a valid file list"
+11016: "Only CSV and VCF file is accepted"
+11017: "File does not exists"
+
+```
+
+# Group Authenticate
+
+## Authentication action [/authenticate]
+
+Authorization Bearer 'Not Required' in header for this api
+
+### Authenticate User  [POST]
+
++ Request with body (application/json)
+    + Body
+        1. Get normal authentication
+        {
+            "username": "<string, required>",
+            "password": "<string, required>",
+            "keep_me_signedin": <boolean, optional> //true or false
+        }
+
+        2.1 2-Step authentication first call
+        {
+            "username": "<string, required>",
+            "password": "<string, required>"
+        }
+        2.2 2-Step authentication with security code
+        {
+            "username": "<string, required>",
+            "password": "<string, required>",
+            "security_code": "<string, optional>"
+        }
+        2.3 2-Step authentication to get security question
+        {
+            "username": "<string, required>",
+            "password": "<string, required>",
+            "get_quetion": "<boolean, optional>" // only 1 should passed when needed
+        }
+        2.4 2-Step authentication with security answer
+        {
+            "username": "<string, required>",
+            "password": "<string, required>",
+            "security_answer": "<string, optional>"
+        }
+        2.5 2-Step authentication to send security code on email
+        {
+            "username": "<string, required>",
+            "password": "<string, required>",
+            "send_mail": "<boolean, optional>" // only 1 should passed when needed
+        }
+
+        3.  Get authenticate with 'sid'
+        {
+            "username": "<string, required>",
+            "sid": "<string, optional>",
+        }
+
+
+        Note: Password should encrypted by get_sid sdk NAS. here is the link: http://eu1.qnap.com/Storage/SDK/get_sid.js
+        Note: "keep_me_signedin" can be used in all formats of API call
+    
++ Response 200 
+    + Valid response
+    1. For normal authentication
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "user_id": "5731872fd4885a0c000a3862",
+            "username": "admin",
+            "is_nas_user": true,
+            "sid": "<NAS Session Id>", // if Nas user then only come
+            "qtoken": "<NAS token>"
+            "token": "<Qcontactz token>",
+            "authPassed": 1, //Auth success
+            "is_tutorial_displayed": true/false //intial tutorial display settings
+        },
+        "message": "Success"
+    }
+    2.1 2 - Step auth enabled
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "need_2sv": "1", // 1 - means 2 step enabled, show security enter screen
+            "lost_phone": "2", // 1- means recieve code on email enabled, 2- means using security question and answer authentication
+            "authPassed": 0 // auth not success yet
+        },
+        "message": "Success"
+    }
+    2.2 - Normal success auth reponse
+    2.3 - To get security question number/ text
+        question no:
+        1: frontend will show "What is your pet's name?"
+        2: frontend will show "What is your favorite sport?"
+        3: frontend will show "What is your favorite color?"
+        4: Custom question(Only in this case text will come)
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "security_question_no": "4", // 4- means custom question
+            "authPassed": 0 // auth not success yet
+        },
+        "message": "Success"
+    }
+    2.4 - Normal success auth reponse
+    2.5 - Response when send mail for code
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "send_result": "1", // 1- means email sent
+            "authPassed": 0, // auth not success yet
+            "emergency_try_count": 1,
+            "emergency_try_limit":5
+        },
+        "message": "Success"
+    }
+
+    3 - Normal success auth reponse
+
+
+    + Invalid response
+    {
+        "status": false
+        "status_code": 10005
+        "data": ""
+        "message": "Invalid username or password"
+    }   
+
+## Authentication action [/authenticate/verify]
+
+Authorization Bearer 'Required' in header for this api
+
+### Verify token  [GET]
+
++ Request with body (application/json)
+    
+    No parameter needed
+    
++ Response 200 
+    + Valid credentials
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "status": "true"
+        },
+        "message": "Success"
+    }
+
+
+    + Invalid credentials
+    {
+        "status": false,
+        "status_code": 10007,
+        "data": {
+            "status": "false"
+        },
+        "message": "Invalid token"
+    }    
+
+## Authentication action [/authenticate/logout]
+
+Authorization Bearer 'Required' in header for this api
+
+### Session logout  [POST]
+
++ Request with body (application/json)
+    
+    No parameter needed
+    
++ Response 200 
+    + Valid credentials
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "status": "true"
+        },
+        "message": "Success"
+    }
+
+
+    + Invalid credentials
+    {
+        "status": false,
+        "status_code": 10007,
+        "data": {
+            "status": "false"
+        },
+        "message": "Invalid token"
+    }    
+
+
+# Group Users
+
+## User collection action [/users]
+
+### List users  [GET]
+
+This API provide list of users in the system filtered by parameters provided
+
++ Querystring Parameters
+
+    + `fields` (comma saparated string, optional) -
+
+        Specified the fields only to fetch in the response. (ex - fname,lname,email)
+
+        + Default: All fields
+
+    + `limit` (number, optional) -
+
+        The limit of number of records in one page.
+
+        + Default: '50'
+
+    + `page` (number, optional) -
+
+        The page number of the result
+
+        + Default: 0
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "total": 1,
+            "data": [{
+                "fname": "Tom",
+                "lname": "Cruise",
+                "username": "tom123",
+                "role": "admin",
+                "is_nas_user": false,
+                "email": "tom@cruise.com",
+                "_id": "56b01c4564acf0bc29ee12c1",
+                "is_active": true,
+                "updated_on": "2016-02-02T03:02:29.148Z",
+                "created_on": "2016-02-02T03:02:29.148Z"
+            }],
+            "page": 0,
+            "current_count": 1
+        },
+        "message": "Success"
+    }
+        
++ Response 403
+    {
+        "status": "false"
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+## Create User [/users]
+
+### Create user [POST]
+
+Create new user
+
++ Body
+    + `fname` (string, optional) - 
+        
+        Max 50 characters
+    
+    + `lname` (string, optional) -
+
+        Max 50 characters
+
+    + `username` (string, required) -
+
+        Max 50 characters
+
+    + `password` (string, required) -
+
+        Max 50 characters
+
+    + `email` (string, optional) -
+
+        Max 50 characters 
+
+    + `is_nas_user` (boolean, optional) -
+
+        true/false  
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '<user_id>',
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+## User Actions [/users/:user_id]
+
+### Get user [GET]
+
+Get single user information
++ Request 
+    + `:user_id` if it's 'me' then return current user details, ex. `/users/me`
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "_id": "56b17c99c5400f0448552be3",
+            "fname": "Scott",
+            "lname": "Sid",
+            "username": "scotttiger",
+            "email": "scott@tiger.com",
+            "profile_pic": "<picture url>",
+            "is_active": true,
+            "updated_on": "2016-02-03T04:05:45.441Z",
+            "created_on": "2016-02-03T04:05:45.441Z"
+        },
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+### Update user  [PUT] 
+
+Update existing user
+
++ Body
+    + `fname` (string, optional) - 
+        
+        As title, max 50 characters
+    
+    + `lname` (string, optional) -
+
+        As title, max 20 characters
+
+    + `email` (string, optional) -
+
+        As title, max 20 characters
+
+    + `is_active` (boolean, optional) -
+
+        true/false
+
+    + `is_tutorial_displayed` (boolean, optional) -
+
+        true/false
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '',
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+### Delete user  [DELETE]
+
+Remove user from system
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '',
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+## Reset user password [/users/reset_password]
+
+### Reset user password [POST]
+
+Reset logged in user password who is not NAS user
+
++ Request
+    {
+        old_password: "<old password>",
+        password: "<Password>"
+    }
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '',
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Batch delete users [/users/batch_delete]
+
+### Batch delete users [POST]
+
+Batch delete users for provided user ids
+
++ Request
+
+{
+    user_ids: []
+}
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '',
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Get user configuration [/users/config]
+
+### Get user config [GET]
+
+Get user preferred settings
+
++ Request
+    No Params required
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "language": "en",
+            "tutorial_displayed": false,
+            "grid_column_selected": []
+        },
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Update user configuration [/users/config]
+
+### Update user config [POST]
+
+Update user preferred settings
++ Body
+    + `language` (string, optional) - 
+        
+        Prefferd language to view application
+    
+    + `tutorial_displayed` (boolean, optional) -
+
+        if tutorial viewed then set true else default false
+
+    + `grid_column_selected` (array, optional) -
+
+        Array of column names that user want to view
+
+    + `grid_config` (Object, optional) -
+        This is general configuration for persisting grid preferences like:
+            page_size, sort order, sort column name etc
+        
+
++ Request
+    {
+       "language": "en",
+        "tutorial_displayed": false,
+        "grid_column_selected": [] 
+    }
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": "",
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+# Group Group
+
+## Group Collection Action [/groups]
+
+### List groups [GET]
+
+Get group list for logged in user
+
++ Request 
+    full : true // if sent then it will list system groups also
+
+
++ Response 200 
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "total": 1,
+            "data": [{
+                "_id": "56b2eaecd65c45171553184d",
+                "name": "Family",
+                "user_id": "56b17c99c5400f0448552be3",
+                "updated_on": "2016-02-04T06:08:44.613Z",
+                "created_on": "2016-02-04T06:08:44.612Z",
+                "contacts_count": 1,
+                "is_active": true
+            }],
+            "page": 0,
+            "current_count": 1,
+            "system_groups": [] // if full=true
+        },
+        "message": "Success"
+    }   
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+## Create Group [/groups]
+
+### Create group [POST]
+
+Create new group for user
+
++ Request
+    {
+        "name": "Family"
+    }
+
++ Response 200
+    {
+            "status": true,
+            "status_code": 10001,
+            "data": '<group_id>',
+            "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+## Group Actions [/groups/:group_id]
+
+### Get group [GET]
+
+Get single group information
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "_id": "56b2eaecd65c45171553184d",
+            "name": "Family",
+            "user_id": "56b17c99c5400f0448552be3",
+            "updated_on": "2016-02-04T06:08:44.613Z",
+            "created_on": "2016-02-04T06:08:44.612Z",
+            "is_active": true
+        },
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+### Update group [PUT]
+
+Update a group
+
++ Request
+    {
+        "name": "Family and friends"
+    }
+
++ Response 200 
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '',
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+### Delete group [DELETE]
+
+Remove group
+
++ Response 200 
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '',
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+## Contacts in Group [/groups/:group_id/contacts]
+
+### Get group contacts [GET]
+
+Get the list of contacts from a particular group
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "total": 1,
+            "data": [{
+                "_id": "56b2f90f1df2ee6417e80a63",
+                "fname": "John",
+                "lname": "Doe"                                
+            }],
+            "page": 0,
+            "current_count": 1
+        },
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Batch delete groups [/groups/batch_delete]
+
+### Batch delete groups [POST]
+
+Batch delete groups for provided group ids
+
++ Request
+
+{
+    group_ids: []
+}
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '',
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+# Group Contacts
+
+## Contacts collection action [/contacts]
+
+### List contacts  [GET]
+
+Get contact list of contacts
+
++ Querystring Parameters
+    + `limit` (number, optional) -
+
+        The limit of number of records in one page.
+
+        + Default: '50'
+
+    + `fields` (string, optional) -
+
+        Specify the fields only to fetch in the response. ex - fname,lname,email
+
+        + Default: All fields
+
+    + `page` (number, optional) -
+
+        The page number of the result
+
+        + Default: 0
+    
+     + `is_active` (String, optional) -
+
+        Send 'is_active = false' to get the list of deleted contacts and viz
+
+        + Default: true
+
+    + `is_favorite` (String, optional) -
+
+        Send 'is_favorite = true' to get the list of favourite contacts and viz
+
+        + Default: false
+        
+    + `s` (String, optional) -
+
+        To search contacts. Optionally depends on 'search_fields' 
+
+        + Default: ''
+
+    + `sortby` (String, optional) -
+
+        To sort contacts. Optionally depends on 'sortorder' 
+
+        + Default: 'updated_on'
+
+    + `sortorder` (Number, optional) -
+
+        To sort contacts. Optionally depends on 'sortby' ex. -1 => desc, 1 => asc
+
+        + Default: '-1'
+
+    + `search_fields` (String, optional)
+
+        To search value of `s` field in perticular field. The string should be comma saparated. Ex. 'fname,lname,emails'.
+        Currently supported field list:
+            + fname
+            + lname
+            + mname
+            + company_name
+            + note
+            + emails
+            + phones
+            + addresses
+            + im
+
+        + Default: 'fname,lname,emails'
+    + `get_count` (Boolean, optional)
+        this will return total number of contacts in user account, if passed true. default false
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "total": 1,
+            "data": [{
+                "_id": "56b1b31a1cc6f6e54f8cb55e",
+                "title": "Mr",
+                "fname": "John",
+                "lname": "Doe",
+                "mname": "K",
+                "dob": "1988-02-01T16:00:00.000Z",
+                "nickname": "John",
+                "company_name": "QNAP Inc",
+                "profile_pic": "<picture url>",
+                "note": "This is the note.",
+                "user_id": "56b17c99c5400f0448552be3",
+                "updated_on": "2016-02-03T07:58:18.590Z",
+                "created_on": "2016-02-03T07:58:18.590Z",
+                "is_active": true,
+                "is_favorite": false,
+                "is_locked": false,
+                "others": [{
+                    "label": "label1",
+                    "value": "value1",
+                    "_id": "56b1b31a1cc6f6e54f8cb55f"
+                }],
+                "events": [{
+                    "label": "DOB",
+                    "value": "05/05/1985",
+                    "_id": "56b1b31a1cc6f6e54f8cb560"
+                }],
+                "phones": [{
+                    "label": "HomePhone",
+                    "value": "+919865585424",
+                    "_id": "56b1b31a1cc6f6e54f8cb562",
+                    "is_primary": false
+                }, {
+                    "label": "OfficePhone",
+                    "value": "+8869857425",
+                    "_id": "56b1b31a1cc6f6e54f8cb561",
+                    "is_primary": true
+                }],
+                "im": [{
+                    "label": "skype",
+                    "value": "johndoe",
+                    "_id": "56b1b31a1cc6f6e54f8cb563"
+                }],
+                "attachments": [{
+                    "label": "attachment1",
+                    "value": "<attachment url>",
+                    "_id": "56b1b31a1cc6f6e54f8cb564"
+                }],
+                "emails": [{
+                    "label": "Home",
+                    "value": "john@doe.com",
+                    "_id": "56b1b31a1cc6f6e54f8cb566",
+                    "is_primary": false
+                }, {
+                    "label": "Office",
+                    "value": "johndoe@qnap.com",
+                    "_id": "56b1b31a1cc6f6e54f8cb565",
+                    "is_primary": true
+                }],
+                "sources": [{
+                    "label": "Facebook",
+                    "value": "johndoe",
+                    "_id": "56b1b31a1cc6f6e54f8cb568"
+                }, {
+                    "label": "Gmail",
+                    "value": "johndoe",
+                    "_id": "56b1b31a1cc6f6e54f8cb567"
+                }],
+                "web_pages": [{
+                    "label": "Work",
+                    "value": "www.google.com",
+                    "_id": "56b1b31a1cc6f6e54f8cb56a"
+                }, {
+                    "label": "Home",
+                    "value": "www.yahoo.com",
+                    "_id": "56b1b31a1cc6f6e54f8cb569"
+                }],
+                "addresses": [{
+                    "label": "Home",
+                    "value": "India",
+                    "_id": "56b1b31a1cc6f6e54f8cb56c"
+                }, {
+                    "label": "Office",
+                    "value": "Taiwan",
+                    "_id": "56b1b31a1cc6f6e54f8cb56b"
+                }]
+            }],
+            "page": 0,
+            "current_count": 1
+        },
+        "message": "Success"
+    }
+
++ Response 403 
+
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Contacts collection action [/contacts/search]
+
+### Search contacts  [GET]
+
+Search and get contact list of contacts
+
++ Querystring Parameters
+    + `limit` (number, optional) -
+
+        The limit of number of records in one page.
+
+        + Default: '50'
+
+    + `fields` (string, optional) -
+
+        Specify the fields only to fetch in the response. ex - fname,lname,email
+
+        + Default: All fields
+
+    + `page` (number, optional) -
+
+        The page number of the result
+
+        + Default: 0
+    
+    + `s` (String, optional) -
+
+        To search contacts. Optionally depends on 'search_in_fields' 
+
+        + Default: ''
+
+    + `sortby` (String, optional) -
+
+        To sort contacts. Optionally depends on 'sortorder' 
+
+        + Default: 'updated_on'
+
+    + `sortorder` (Number, optional) -
+
+        To sort contacts. Optionally depends on 'sortby' ex. -1 => desc, 1 => asc
+
+        + Default: '-1'
+
+    + `search_in_fields` (String, optional)
+
+        To search value of `s` field in perticular field. The string should be comma saparated. Ex. 'fname,lname,emails'.
+        Currently supported field list:
+            + fname
+            + lname
+            + mname
+            + company_name
+            + note
+            + emails
+            + phones
+            + addresses
+            + im
+
+        + Default: 'fname,lname,emails'
+    
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "total": 1,
+            "data": [{
+                "_id": "56b1b31a1cc6f6e54f8cb55e",
+                "title": "Mr",
+                "fname": "John",
+                "lname": "Doe",
+                "mname": "K",
+                "dob": "1988-02-01T16:00:00.000Z",
+                "nickname": "John",
+                "company_name": "QNAP Inc",
+                "profile_pic": "<picture url>",
+                "note": "This is the note.",
+                "user_id": "56b17c99c5400f0448552be3",
+                "updated_on": "2016-02-03T07:58:18.590Z",
+                "created_on": "2016-02-03T07:58:18.590Z",
+                "is_active": true,
+                "is_favorite": false,
+                "is_locked": false,
+                "others": [{
+                    "label": "label1",
+                    "value": "value1",
+                    "_id": "56b1b31a1cc6f6e54f8cb55f"
+                }],
+                "events": [{
+                    "label": "DOB",
+                    "value": "05/05/1985",
+                    "_id": "56b1b31a1cc6f6e54f8cb560"
+                }],
+                "phones": [{
+                    "label": "HomePhone",
+                    "value": "+919865585424",
+                    "_id": "56b1b31a1cc6f6e54f8cb562",
+                    "is_primary": false
+                }, {
+                    "label": "OfficePhone",
+                    "value": "+8869857425",
+                    "_id": "56b1b31a1cc6f6e54f8cb561",
+                    "is_primary": true
+                }],
+                "im": [{
+                    "label": "skype",
+                    "value": "johndoe",
+                    "_id": "56b1b31a1cc6f6e54f8cb563"
+                }],
+                "attachments": [{
+                    "label": "attachment1",
+                    "value": "<attachment url>",
+                    "_id": "56b1b31a1cc6f6e54f8cb564"
+                }],
+                "emails": [{
+                    "label": "Home",
+                    "value": "john@doe.com",
+                    "_id": "56b1b31a1cc6f6e54f8cb566",
+                    "is_primary": false
+                }, {
+                    "label": "Office",
+                    "value": "johndoe@qnap.com",
+                    "_id": "56b1b31a1cc6f6e54f8cb565",
+                    "is_primary": true
+                }],
+                "sources": [{
+                    "label": "Facebook",
+                    "value": "johndoe",
+                    "_id": "56b1b31a1cc6f6e54f8cb568"
+                }, {
+                    "label": "Gmail",
+                    "value": "johndoe",
+                    "_id": "56b1b31a1cc6f6e54f8cb567"
+                }],
+                "web_pages": [{
+                    "label": "Work",
+                    "value": "www.google.com",
+                    "_id": "56b1b31a1cc6f6e54f8cb56a"
+                }, {
+                    "label": "Home",
+                    "value": "www.yahoo.com",
+                    "_id": "56b1b31a1cc6f6e54f8cb569"
+                }],
+                "addresses": [{
+                    "label": "Home",
+                    "value": "India",
+                    "_id": "56b1b31a1cc6f6e54f8cb56c"
+                }, {
+                    "label": "Office",
+                    "value": "Taiwan",
+                    "_id": "56b1b31a1cc6f6e54f8cb56b"
+                }]
+            }],
+            "page": 0,
+            "current_count": 1
+        },
+        "message": "Success"
+    }
+
++ Response 403 
+
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Create New Contact [/contacts]
+
+### Create contact [POST]
+
+Create new contact for user
+
++ Body
+
+    + `title` (string, optional) - 
+        
+        As title, max 3 characters
+    
+    + `fname` (string, optional) - 
+        
+        As fname, max 20 characters
+
+    + `lname` (string, optional) -
+
+        As lname, max 20 characters
+
+    + `mname` (string, optional) -
+
+        As mname, max 20 characters
+
+    + `dob` (string, optional) -
+
+        As dob, format mm-dd-yyyy
+
+    + `nickname` (string, optional) -
+
+        As nickname, max 20 characters
+
+    + `company_name` (string, optional) -
+
+        As company_name, max 30 characters
+
+    + `note` (string, optional) -
+
+        As note,  max 200 characters
+
+    + `addresses` (array, optional) -
+
+        [{
+            "label": string,
+            "value": string
+        }]
+
+    + `web_pages` (array, optional) -
+
+        [{
+            "label": string,
+            "value": string
+        }]
+
+    + `sources` (array, optional) -
+
+        [{
+            "label": string,
+            "value": string
+        }]
+
+    + `emails` (array, optional) -
+
+        [{
+            "label": string,
+            "value": string,
+            "is_primary": boolean
+        }]
+
+    + `groups` (array, optional) -
+
+        [{
+            "name": (string, group_name) or "group_id": (string, group_id),
+        }]
+
+    + `attachments` (array, optional) -
+        
+        [{
+            "label": string,
+            "value": string
+        }]  
+
+    + `im` (array, optional) -
+
+        [{
+            "label": string,
+            "value": string
+        }]
+
+    + `phones` (array, optional) -
+
+        [{
+            "label": string,
+            "value": string,
+            "is_primary": boolean
+        }]
+
+    + `events` (array, optional) -
+        
+        [{
+            "label": string,
+            "value": string
+        }]
+
+    + `others` (array, optional) -
+
+        [{
+            "label": string,
+            "value": string
+        }]   
++ Request
+    {
+        "title": "Mr",
+        "fname": "John",
+        "lname": "Doe",
+        "mname": "K",
+        "dob": "1988-02-01T16:00:00.000Z",
+        "nickname": "John",
+        "company_name": "QNAP Inc",
+        "profile_pic": "<picture url>",
+        "note": "This is the note.",
+        "is_active": true,
+        "is_favorite": false,
+        "is_locked": false,
+        "others": [{
+            "label": "label1",
+            "value": "value1",
+        }],
+        "events": [{
+            "label": "DOB",
+            "value": "05/05/1985",
+        }],
+        "phones": [{
+            "label": "HomePhone",
+            "value": "+919865585424",
+            "is_primary": false
+        }, {
+            "label": "OfficePhone",
+            "value": "+8869857425",
+            "is_primary": true
+        }],
+        "im": [{
+            "label": "skype",
+            "value": "johndoe",
+        }],
+        "attachments": [{
+            "label": "attachment1",
+            "value": "<attachment url>",
+        }],
+        "emails": [{
+            "label": "Home",
+            "value": "john@doe.com",
+            "is_primary": false
+        }, {
+            "label": "Office",
+            "value": "johndoe@qnap.com",
+            "is_primary": true
+        }],
+        "sources": [{
+            "label": "Facebook",
+            "value": "johndoe",
+        }, {
+            "label": "Gmail",
+            "value": "johndoe",
+        }],
+        "web_pages": [{
+            "label": "Work",
+            "value": "www.google.com",
+        }, {
+            "label": "Home",
+            "value": "www.yahoo.com",
+        }],
+        "addresses": [{
+            "label": "Home",
+            "value": "India",
+        }, {
+            "label": "Office",
+            "value": "Taiwan",
+        }]
+    }
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '<contact_id>',
+        "message": "Success"
+    }
+
++ Response 403
+
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+## Contact action [/contacts/:contact_id]
+
+### Get contact [GET]
+
+Get single contact information
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "_id": "56b1b31a1cc6f6e54f8cb55e",
+            "title": "Mr",
+            "fname": "John",
+            "lname": "Doe",
+            "mname": "K",
+            "dob": "1988-02-01T16:00:00.000Z",
+            "nickname": "John",
+            "company_name": "QNAP Inc",
+            "profile_pic": "<picture url>",
+            "note": "This is the note.",
+            "user_id": "56b17c99c5400f0448552be3",
+            "updated_on": "2016-02-03T07:58:18.590Z",
+            "created_on": "2016-02-03T07:58:18.590Z",
+            "is_active": true,
+            "is_favorite": false,
+            "is_locked": false,
+            "others": [{
+                "label": "label1",
+                "value": "value1",
+                "_id": "56b1b31a1cc6f6e54f8cb55f"
+            }],
+            "events": [{
+                "label": "DOB",
+                "value": "05/05/1985",
+                "_id": "56b1b31a1cc6f6e54f8cb560"
+            }],
+            "phones": [{
+                "label": "HomePhone",
+                "value": "+919865585424",
+                "_id": "56b1b31a1cc6f6e54f8cb562",
+                "is_primary": false
+            }, {
+                "label": "OfficePhone",
+                "value": "+8869857425",
+                "_id": "56b1b31a1cc6f6e54f8cb561",
+                "is_primary": true
+            }],
+            "im": [{
+                "label": "skype",
+                "value": "johndoe",
+                "_id": "56b1b31a1cc6f6e54f8cb563"
+            }],
+            "attachments": [{
+                "label": "attachment1",
+                "value": "<attachment url>",
+                "_id": "56b1b31a1cc6f6e54f8cb564"
+            }],
+            "emails": [{
+                "label": "Home",
+                "value": "john@doe.com",
+                "_id": "56b1b31a1cc6f6e54f8cb566",
+                "is_primary": false
+            }, {
+                "label": "Office",
+                "value": "johndoe@qnap.com",
+                "_id": "56b1b31a1cc6f6e54f8cb565",
+                "is_primary": true
+            }],
+            "sources": [{
+                "label": "Facebook",
+                "value": "johndoe",
+                "_id": "56b1b31a1cc6f6e54f8cb568"
+            }, {
+                "label": "Gmail",
+                "value": "johndoe",
+                "_id": "56b1b31a1cc6f6e54f8cb567"
+            }],
+            "web_pages": [{
+                "label": "Work",
+                "value": "www.google.com",
+                "_id": "56b1b31a1cc6f6e54f8cb56a"
+            }, {
+                "label": "Home",
+                "value": "www.yahoo.com",
+                "_id": "56b1b31a1cc6f6e54f8cb569"
+            }],
+            "addresses": [{
+                "label": "Home",
+                "value": "India",
+                "_id": "56b1b31a1cc6f6e54f8cb56c"
+            }, {
+                "label": "Office",
+                "value": "Taiwan",
+                "_id": "56b1b31a1cc6f6e54f8cb56b"
+            }]
+        },
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+### Update contact [PUT]
+
+Update contact information.
+
++ Body
+    + `title` (string, optional) - 
+        
+        As title, max 20 characters
+    
+    + `fname` (string, optional) - 
+        
+        As fname, max 50 characters
+
+    + `lname` (string, optional) -
+
+        As lname, max 20 characters
+
+    + `mname` (string, optional) -
+
+        As mname, max 20 characters
+
+    + `dob` (string, optional) -
+
+        As dob, format mm/dd/yyyy
+
+    + `nickname` (string, optional) -
+
+        As nickname, max 20 characters
+
+    + `company_name` (string, optional) -
+
+        As company_name, max 50 characters
+
+    + `note` (string, optional) -
+
+        As note,  max 200 characters
+
+    + `is_active` (boolean, optional) - 
+
+        This will soft delete contact if we pass 'false'
+
+    + `is_private` (boolean, optional) - 
+
+        This will lock contact if pass 'true' and accessable with only high security password
+
+    + `is_favorite` (boolean, optional) - 
+
+        This will make contact favorite
+
+
+    + `groups` (Object, optional) -
+
+        Ex.
+        {
+            checked: [{"name":"<group name>"},{"group_id":"<group_id>"}],
+            unchecked: [{"name":"<group name>"},{"group_id":"<group_id>"}]
+        }
+
+    + `events` , `others`, `im`, `attachments`, `sources`, `web_pages`, `addresses` (array, optional)  
+
+        Common for the above (in case of edit or add any of the above new entity)
+
+        Ex. for `events` entity
+
+            {
+                "events": [{
+                    "value": "05/08/1985",
+                    "label": "LN",
+                    "_id": "56b2c9b0d428031c0d370766" //updating existing event entity
+                }, {
+                    "value": "05/07/1985",
+                    "label": "LN",
+                    "_id": "56b2c9b0d428031c0d370767"
+                }, {
+                    "value": "06/07/1985",
+                    "label": "NIK"   // add new event entity
+                }]
+            }
+
+    + `phones` , `emails` (array, optional)  
+
+        Common for the above (in case of edit or add any of the above new entity)
+
+        Ex. for `emails` entity
+        {
+            "emails": [{
+                "label": "Home",
+                "value": "sanjay1@madne.com",
+                "is_primary": true,
+                "_id": "56b2e70cd09713a3148b895c"
+            }]
+        }
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '',
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+### Delete contact [DELETE]
+
+Delete the contact.
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '<contact_id>',
+        "message": "Success"
+    }
+
++ Response 403
+        {
+            "status": false
+            "status_code": 10002
+            "data": ""
+            "message": "No token provided"
+        }
+
+
+## Groups of contact [/contacts/:contact_id/groups]
+
+### Get contact groups [GET]
+
+Get list of groups in which a contact is present
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "total": 1,
+            "data": [{
+                "_id": "56b2f6bb1df2ee6417e80a61",
+                "name": "Work",
+                "user_id": "56b17c99c5400f0448552be3",
+                "updated_on": "2016-02-04T06:59:07.532Z",
+                "created_on": "2016-02-04T06:59:07.532Z",
+                "is_active": true
+            }],
+            "page": 0,
+            "current_count": 1
+        },
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Contact Picture [/contacts/picture]
+
+### Add profile picture [POST]
+
+Add profile picture to the contact, if `contact_id` provided. else it will generate a temp `contact_id`.
+This api not doesn't support "content-type: application/json"
+
++ Request
+    + `profile_pic` (file, required) -
+    + `contact_id` (contact id, optional)
+        + This need to send as query param. If it's not provided then picture will be uploaded on server temprary and `contact_id` returns. This `contact_id` need to send while create contact along with temprary  `profile_pic`.
+        + Supported file types: jpg,jpeg,png
+        + Allowed file size: 100x100 pixel 
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            contact_id: <contact_id>,
+            profile_pic: <profile_pic full path>
+        },
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Contact Attachments [/contacts/attachments]
+
+### Add attachments [POST]
+Add multiple attachments to the contact, if `contact_id` provided. else it will generate a temp `contact_id`.
+Add attachments to Contact, this api not doesn't support "content-type: application/json"
+
++ Request
+    + `attachments` (file, required) -
+        Accepts multiple files with multipart
+    + `contact_id` (contact id, optional)
+        + This need to send as query param. Also need to follow same process as picture upload.
+
++ Response 200
+    {
+      "status": true,
+      "status_code": 10001,
+      "data": {
+        contact_id: <contact_id>,
+        attachments: [
+            {
+              "label": <original file name>,
+              "file_type": <file type>,
+              "value": <full attachment path>,
+              "_id" : <attachment id>
+            }
+          ]
+        }
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Contact Attachments [/contacts/attachments/delete]
+
+### Delete attachments [POST]
+
+Delete attachments of a contact
+
++ Request
+    {
+        contact_id: <contact_id>,
+        attachments: [
+            {
+              "label": <original file name>,
+              "file_type": <file type>,
+              "value": <full attachment path>,
+              "_id" : <attachment id>
+            }
+        ]
+    }
+
++ Response 200
+    {
+      "status": true,
+      "status_code": 10001,
+      "data": "Attachment deleted",
+      "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Batch update contact [/contacts/batch_update]
+
+### Batch update contact [POST]
+
+Batch update contact with given data will handle one parameter at a time
+
++ Request
+
+{
+    contact_ids: [<contact_id>,<contact_id>],
+    update_data: {
+        'is_active': true/false, //optional
+        'is_favorite': true/false, //optional
+        'is_locked': true/false, //optional
+        'groups': {
+            "checked": [{'name':'test group'}, {group_id: <group_id>}]//optional
+            "unchecked": [{'name':'test group'}, {group_id: <group_id>}]//optional
+        }
+    } 
+}
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '',
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+    
+## Batch insert contact [/contacts/batch_insert]
+
+### Batch insert contact [POST]
+
+Batch insert contacts
+
++ Request
+{
+    contacts:[
+        {
+            title: "", //optional
+            fname: "", //optional
+            lname: "", //optional
+            mname: "", //optional
+            nickname: "", //optional
+            company_name: "", //optional
+            note: "", //optional
+            addresses: [], //optional, follow same schema like before
+            im: [], //optional, follow same schema like before
+            phones: [], //optional, follow same schema like before
+            events: [], //optional, follow same schema like before
+            others: [], //optional, follow same schema like before
+            sources: [], //required, follow same schema like before and provide {label: 'phonebook', value:'phone name and model'}
+        }
+    ]
+}
+
+## Add contact usage [/contacts/add_usage]
+
+### Add contact usage [POST]
+
++ Request
+{
+    ids:[<contact_id>]
+}
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '',
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+## Batch delete contact [/contacts/batch_delete]
+
+### Batch delete contact [POST]
+
+Batch delete contacts for provided contacts ids
+
++ Request
+
+{
+    contact_ids: [<contact_id>], //optional
+    remove_all: true //optional- this will remove all contacts for the user,
+    trash_only: true // This option will delete all contacts from trash. for this you need to pass `remove_all: true`
+}
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": '',
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Find Duplicate [/contacts/duplicate]
+
+### Find Duplicate [GET]
+
+Find duplicate contacts
+
++ Request body
+    + `limit` - no of records needed, default 50.
+    + `page` - page number
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "total": 2,
+            "page": 0,
+            "current_count": 2,
+            "pages": 1,
+            "data":[{
+                "_id": {
+                  "<common field>": "<common value>"
+                },
+                "ids": [
+                  "<contactid>"
+                ],
+                "count": 2,
+                "contacts":[<contact object>]
+            }]
+        },
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Merge Duplicate [/contacts/merge]
+
+### Merge Duplicate [POST]
+
+Merge duplicate contacts
+
++ Request body
+    {
+        ids:[
+            [<contactid>,<contactid>],
+            [<contactid>,<contactid>]
+        ]
+    }
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": "",
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Merge history [/contacts/merge_history]
+
+### Merge history [GET]
+
+Merge history
+
++ Request body
+    `limit` - send limit for pagination
+    `page` - page number
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "total": 2,
+            "page": 0,
+            "current_count": 2,
+            "pages": 1,
+            "data": [
+                {
+                    "_id": <id>,
+                    "user_id":<user_id>,
+                    "merged_contact":<merged_contact>,
+                    contacts:[<contact object>]
+                }
+            ]
+        },
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Merge restore [/contacts/merge_restore]
+
+### Merge restore [POST]
+
+Merge restore
+
++ Request body
+    {
+        "history":[{
+            "id": <history_id>,
+            "contact_ids":[<contact_id>]
+        }]
+    }
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": "Restore success.",
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+## Temporary Contacts [/contacts/tmp/<transaction_id>]
+
+### Get contacts [GET]
+
+This will return you temporary contacts.
+
+This will be available only in CSV import.
+
+Note: Transaction id will be returned while you upload a file. Also please check the general services for getting Template and Save Template
+
++ Request 
+    `page` - page number for pagination
+    `limit` - limit for records on the page
+
++ Response 200
+    {
+        "status":true,
+        "status_code":10001,
+        "data":{"total":2,"data":[{"_id":"578c84115a5740b63bf40d1e","user_id":"574d62a9f05131d2172c0e61","transaction_id":"578c84115a5740b63bf40d1d","sources":{"label":"CSV","value":"google10.csv"},"updated_on":"2016-07-18T07:24:07.739Z","created_on":"2016-07-18T07:24:07.739Z","is_active":true,"is_favorite":false,"is_locked":false,"tmp_data":[{"label":"Name","value":"<data>"},{"label":"Given Name","value":"<data>"},{"label":"Additional Name","value":""},{"label":"Family Name","value":"<data>"}]}],"page":0,"current_count":1,"pages":2},
+        "message":"Success"
+    }
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+### Modify contacts [POST]
+
+This api will be used to modify the status of contact whether the contact can be imported or not
+
+This will be available only in CSV import.
+
+Note: Transaction id will be returned while you upload a file. Also please check the general services for getting Template and Save Template
+
++ Request 
+    {
+        contact_id: ["578c8a907f4666090014f0cc"], //required
+        is_active: false OR true //required
+    }
+
++ Response 200
+    {
+        "status":true,
+        "status_code":10001,
+        "data":{"ok":1,"nModified":1,"n":1},
+        "message":"Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+### Delete contacts [DELETE]
+
+This will delete all the Tempoarary contacts
+
++ Response 200
+    {
+        "status":true,
+        "status_code":10001,
+        "data": '',
+        "message":"Success"
+    }
+
++ Response 403
+{
+    "status": false
+    "status_code": 10002
+    "data": ""
+    "message": "No token provided"
+}
+
+## Temporary Contacts Import [/contacts/tmp/<transaction_id>/import]
+
+### Temporary contacts Import [POST]
+
+This api will be used to import Temporary contacts for preview or directly to main db
+
+This api will move into background task
+
+Note: Transaction id will be returned while you upload a file. 
+
++ Request 
+    {
+        "mapper": {"<label in Get temp contacts api>": "<field value in Get Template mapping api>"}, //required only in case of CSV file OR optional if import from phone
+        "delimiter": "abc", //optional
+        "group_name": "Abcdef", //required 
+        "is_direct_import": true, //optional: If true then it will directly import to the main db or else will import into the preview db
+        "is_from_phone":true, //if the contacts are imported from phone set this flag
+        "device_id":"123123123" //if the contacts are imported from phone then this field is required
+    }
+
++ Response 200
+    {
+        "status":true,
+        "status_code":10001,
+        "data":{"__v":0,"type":"any-csv-import","name":"Import CSV","sub_type":"import-tmp","user_id":"574d62a9f05131d2172c0e61","general_data":{"delimiter":"abc","mapper":{"Email-Office":"emails-Office","Email-Home":"emails-Home","First Name":"fname"},"group_name":"Abcdef","transaction_id":"578c84115a5740b63bf40d1d"},"_id":"578c8d822c0859c93f8bae83","created_on":"2016-07-18T00:00:00.000Z"},
+        "message":"Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+
+## Temporary Contacts Header [/contacts/tmp/header/<transaction_id>]
+
+### Temporary contacts Header [GET]
+
+This api will give the header columns for CSV
+
+This will be available only in CSV import.
+
+Note: Transaction id will be returned while you upload a file. 
+
++ Request 
+    Nothing required
+
++ Response 200
+    {"status":true,"status_code":10001,"data":[{"map_name":"First Name","display_name":"First Name","field_value":"fname"},{"map_name":"Middle Name","display_name":"Middle Name","field_value":"mname"}],"message":"Success"}
+
+
+## Preview Contacts [/contacts/tmp/preview/<transaction_id>]
+
+This api should be called once the temporary contacts are imported
+
+### Get contacts [GET]
+
+Response will be similar to that of contacts API
+
+Note: Transaction id will be returned while you upload a file.
+
++ Request 
+    `page` - page number for pagination
+    `limit` - limit for records on the page
+
++ Response 200
+    {
+        "status":true,
+        "status_code":10001,
+        "data":{"total":83,"data":[{"_id":"578c908c8cbacc0942e1c153","fname":"","user_id":"574d62a9f05131d2172c0e61","transaction_id":"578c908c8cbacc0942e1c152","note":"","usage":0,"updated_on":"2016-07-18T08:23:55.342Z","created_on":"2016-07-18T08:23:55.342Z","is_active":true,"is_favorite":false,"is_locked":false,"others":[],"events":[],"phones":[],"im":[],"attachments":[],"emails":[],"sources":[{"label":"CSV","value":"100.csv"}],"web_pages":[],"addresses":[],"profile_pic":"/default/profile.png","profile_pic_history":[]}],"page":0,"current_count":1,"pages":83},"message":"Success"
+    }
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+### Modify contacts [POST]
+
+This api will be used to modify the status of contact whether the contact can be imported or not
+
+Note: Transaction id will be returned while you upload a file. Also please check the general services for getting Template and Save Template
+
++ Request 
+    {
+        contact_id: ["578c8a907f4666090014f0cc","578c8a907f4666090014f0cc"], //required
+        is_active: false OR true //required
+    }
+
++ Response 200
+    {
+        "status":true,
+        "status_code":10001,
+        "data":{"ok":1,"nModified":1,"n":1},
+        "message":"Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+### Delete contacts [DELETE]
+
+This will delete all the contacts in the preview
+
++ Response 200
+    {
+        "status":true,
+        "status_code":10001,
+        "data": '',
+        "message":"Success"
+    }
+
++ Response 403
+{
+    "status": false
+    "status_code": 10002
+    "data": ""
+    "message": "No token provided"
+}
+
+
+## Preview Contacts Import [/contacts/tmp/preview/<transaction_id>/import]
+
+### Preview contacts Import [POST]
+
+This api will be used to import contacts finally into the system
+
+This api will move into background task
+
+Note: Transaction id will be returned while you upload a file. 
+
++ Request 
+    
+
++ Response 200
+    {
+        "status":true,
+        "status_code":10001,
+        "data":{"__v":0,"type":"any-csv-import","name":"Import CSV","sub_type":"import-preview","user_id":"574d62a9f05131d2172c0e61","general_data":{"transaction_id":"578c908c8cbacc0942e1c152"},"_id":"578c94259f4cb48843abc63e","created_on":"2016-07-18T00:00:00.000Z"},
+        "message":"Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+## Batch group status [/contacts/batch_group_status]
+
+### Batch group status [POST]
+
+Batch group status of contact ids
+
++ Request
+
+{
+    contact_ids: [<contatc_id>,<contact_id>]
+}
+
++ Response 200
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": [
+            {
+              "status": "partial",
+              "group_id": <group_id>
+            },
+            {
+              "status": "all",
+              "group_id": <group_id>
+            }
+          ],
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+# Group High Security
+
+## High Security Set [/high_security/set]
+
+### Set security [POST]
+
+API to set the High security password and security question-answer
+
++ Request with body (application/json)
+    + Body
+        {
+            "security_question": "<string, required>",
+            "security_answer": "<string, required>",
+            "high_security_password": "<string, required>" 
+        }         
+
+        Note: Password should encrypted by get_sid sdk NAS. here is the link: http://eu1.qnap.com/Storage/SDK/get_sid.js
+    
++ Response 200 
+    + Valid Response
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": "",
+        "message": "Success"
+    }
+
+
+    + Invalid Response
+    {
+        "status": false,
+        "status_code": 10008,
+        "data": "",
+        "message": "High Security password cannot be empty."
+    }      
+
+## High Security Password Reset [/high_security/reset]
+
+### Reset security password  [POST]
+
+Reset Security password either by old security password or security question/answer combination
+
++ Request with body (application/json)
+    + Body
+        {   
+            "old_high_security_password": "<string>"
+            "security_question": "<string>",
+            "security_answer": "<string>",
+            "new_high_security_password": "<string, required>" 
+        }         
+
+        Note: Password should encrypted by get_sid sdk NAS. here is the link: http://eu1.qnap.com/Storage/SDK/get_sid.js
+    
++ Response 200 
+    + Valid Response
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": "",
+        "message": "Success"
+    }
+
+
+    + Invalid Response
+    {
+        "status": false,
+        "status_code": 10009,
+        "data": "",
+        "message": "Wrong High Security password"
+    } 
+
+    {
+        "status": false,
+        "status_code": 10008,
+        "data": "",
+        "message": "High Security password cannot be empty."
+    }
+
+## High Security Question [/high_security/question]
+
+### Get security question [GET]
+
+API to get the security question set by user
+
++ Response 200 
+    + Valid Response
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "data": "Whats your middle name"
+        },
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+## Get Secondary Token [/high_security/get_token]
+
+### Get secondary token [POST]
+
+Get the secondary token for browsing private contacts.
+
+For private contacts -  send in header Highsecurity : Bearer <secondary_token> for /api/v1/contacts
+
++ Request with body (application/json)
+    + Body
+        {   
+            "high_security_password": "<string, required>" 
+        }         
+
+        Note: Password should encrypted by get_sid sdk NAS. here is the link: http://eu1.qnap.com/Storage/SDK/get_sid.js
+
++ Response 200 
+    + Valid Response
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "secondary_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTZiOThmNjc0M2EyOThiZTJkNTA1NDBiIiwiaGlnaF9zZWN1cml0eV9wYXNzd29yZCI6IjEyMzQ1NiIsImlhdCI6MTQ1NjEyNzA3OH0.B0xdUEtGsRvGVxnsFqHsRCyb1DP7Q5pYPanMhEhv9-M"
+        },
+        "message": "Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+# Group Security Question 
+
+## Security Question List [/question_list]
+
+### Get question list  [GET]
+
+Get the list of predefined Security Question
+
++ Response 200 
+    {
+        "status": true,
+        "status_code": 10001,
+        "data": {
+            "total": 1,
+            "data": [{
+                "_id": "56c4360119f0424c2efbf821",
+                "name": "Whats your middle name",
+                "__v": 0,
+                "created_on": "2016-02-17T00:00:00.000Z",
+                "is_active": true
+            }],
+            "page": 0,
+            "current_count": 1
+        },
+        "message": "Success"
+    }     
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+# Group Import Contacts
+
+## Import Contacts Google Contacts [/imports/google/contacts]
+
+### Google Contacts  [POST]
+
++ Request with body (application/json)
+    + Body
+        {
+            "auth_key": "<string, required>"            
+        }
+        
+    
++ Response 200 
+    + Valid Response
+        {
+            "status": true,
+            "status_code": 10001,
+            "data": "<Task Details>",
+            "message": "Success"
+        }
+
+
+    + Invalid Response
+        {
+            "status": false
+            "status_code": 10002
+            "data": ""
+            "message": "No token provided"
+        }
+
+## Import Contacts Google Contacts [/imports/google/syncnow]
+
+### Google SyncNow [POST]
+
+This api will be used to sync account instantly
+
++ Request with body (application/json)
+    + Body
+        {
+            "id": "<sync id, required>",
+            "is_full_sync": <boolean optional>
+        }
+        
+    
++ Response 200 
+    + Valid Response
+        {
+            "status": true,
+            "status_code": 10001,
+            "data": "<Task Details>",
+            "message": "Success"
+        }
+
+
+    + Invalid Response
+        {
+            "status": false
+            "status_code": 10002
+            "data": ""
+            "message": "No token provided"
+        }
+
+## Import Contacts Google Contacts Sync API [/imports/google/sync]
+
+### Get Sync Accounts [GET]
+
+This api will be used to get all the sync accounts of the user
+
++ Response 200
+    {
+        "status":true,
+        "status_code":10001,
+        "data":[{"_id":"<syncid>","user_id":"","account_type":"GOOGLE","account_name":"<email add>","group_id":"57bbac5dd39569a5368a6e1e","metadata":{"refresh_token":"1/ATZlp9mXnhgX8ju_DpNaaYCcX40hXtPau6-45sQKTL4"},"__v":0,"last_sync":"2016-08-23T01:59:29.024Z","last_sync_status":<whether las sync was success>,"error_details":"","is_active":true,"trigger_break":"1440","created_on":"2016-08-23T01:52:29.044Z"}],
+        "message":"Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+### Modify Sync Account [POST]
+
+This api will be used to modify the sync timings
+
++ Request 
+    {
+        "id":"<sync id>", 
+        "trigger_break":"1440"
+    }
+    
++ Response 200
+    {
+        "status":true,
+        "status_code":10001,
+        "data":{<updated account details>},
+        "message":"Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }
+
+
+### Delete Sync Accounts [DELETE]
+
+This api will be used to delete the accounts synced by the user
+
++ Request
+    {
+        "id":["<array of sync id>"]
+    }
+
++ Response 200
+    {
+        "status":true,
+        "status_code":10001,
+        "data":{"ok":1,"n":0},
+        "message":"Success"
+    }
+
++ Response 403
+    {
+        "status": false
+        "status_code": 10002
+        "data": ""
+        "message": "No token provided"
+    }    
+
+
+## CSV/vCard [/imports]
+
+### CSV / vCard Contacts [POST]
+Checkout the proper file format here [/default/csv] Or [/default/vCard]
+
+For CSV, these contacts will be first imported into temp db. Please check the temp contacts api  in Contacts section
+For VCF, These contacts will be imported to preview or main db
+
+Note: In case of CSV, this will not be a background task.
+
+
+this api doesn't support "content-type: application/json"
++ Request
+    + `import` (file, required) -
+        Accepts file with multipart
+
++ Response 200 
+    + Valid Response
+        {
+            "status":true,
+            "status_code":10001,
+            "data":{"user_id":"574d62a9f05131d2172c0e61","sources":{"label":"CSV","value":"google10.csv"},"transaction_id":"578c80b569680cde390457f8","contactcount":0,"group_name":"google10.csv_CSV_20160718_150941596"},
+            "message":"Success"
+        }
+
+    + Invalid Response
+        {
+            "status": false
+            "status_code": 10002
+            "data": ""
+            "message": "No token provided"
+        }
+
+## CSV/vCard NAS File [/imports/file]
+
+### CSV / vCard Contacts from NAS uploaded file [POST]
+Checkout the proper file format here [/default/csv] Or [/default/vCard]
+
+For CSV, these contacts will be first imported into temp db. Please check the temp contacts api  in Contacts section
+For VCF, These contacts will be imported to preview or main db
+
+Note: In case of CSV, this will not be a background task.
+
++ Request
+    {
+        "import": <file path>
+    }
+    
+
++ Response 200 
+    + Valid Response
+        {"status":true,"status_code":10001,"data":{"transaction_id":"57981a6d7cc1e88943818526","group_name":"google.csv_CSV_20160727_102029786","file_details":{"path":"/home/murtuza/Programming/node/qcontacts/shared/server/config/../public/uploads/57775e03d281189f601152be/google.csv","originalname":"google.csv","filename":"google.csv","filetype":".csv"}},"message":"Success"}
+
+    + Invalid Response
+        {
+            "status": false
+            "status_code": 10002
+            "data": ""
+            "message": "No token provided"
+        }
+
+
+# Group Export Contacts
+
+## CSV/vCard [/exports]
+
+### CSV/vCard [POST]
+
++ Request 
+    {
+        export_type: ["vcard","mycontact-csv"], //required
+        contact_ids: [<contact_id>], //optional
+        group_ids: [<group_id>], //optional
+        is_locked: true/false//optional,
+        is_active: true/false // optional
+        is_favorite: true/false // optional
+    }
+
+    default - all active contacts
+   
++ Response 200 
+    + Valid Response
+        {
+            "status": true,
+            "status_code": 10001,
+            "data": [{"<Task Details>"}],
+            "message": "Success"
+        }
+
+
+    + Invalid Response
+        {
+            "status": false
+            "status_code": 10002
+            "data": ""
+            "message": "No token provided"
+        }  
+
+        
+## CSV [/exports/csv]
+
+### CSV [POST]
+
++ Request 
+    {
+        contact_ids: [<contact_id>], //optional
+        group_ids: [<group_id>], //optional
+        is_locked: true/false//optional,
+        is_active: true/false // optional
+        is_favorite: true/false // optional
+    }
+
+    default - all active contacts
+   
++ Response 200 
+    + Valid Response
+        {
+            "status": true,
+            "status_code": 10001,
+            "data": "<Task Details>",
+            "message": "Success"
+        }
+
+
+    + Invalid Response
+        {
+            "status": false
+            "status_code": 10002
+            "data": ""
+            "message": "No token provided"
+        }  
+
+## vCard [/exports/vcard]
+
+### vCard [POST]
+
++ Request 
+    {
+        contact_ids: [<contact_id>], //optional
+        group_ids: [<group_id>], //optional
+        is_locked: true/false//optional,
+        is_active: true/false // optional
+        is_favorite: true/false // optional
+    }
+
+    default - all active contacts
+   
++ Response 200 
+    + Valid Response
+        {
+            "status": true,
+            "status_code": 10001,
+            "data": "<Task Details>",
+            "message": "Success"
+        }
+
+
+    + Invalid Response
+        {
+            "status": false
+            "status_code": 10002
+            "data": ""
+            "message": "No token provided"
+        }  
+
+
+# Group Snapshot & Restore
+
+## Snapshot List [/snapshot]
+
+### Snapshot [GET]
+   
++ Response 200 
+    + Valid Response
+        {
+            "status": true,
+            "status_code": 10001,
+            "data": [{<Snapshot list>}],
+            "message": "Success"
+        }
+
+    + Invalid Response
+        {
+            "status": false
+            "status_code": 10000
+            "data": ""
+            "message": "No token provided"
+        }
+
+## Create Snapshot [/snapshot]  
+
+### Create Snapshot [POST]
+
++ Request 
+    {
+        display_name: "<string>" //required        
+    }
+
++ Response 200 
+    + Valid Response
+        {
+            "status": true,
+            "status_code": 10001,
+            "data": {<Snapshot details>},
+            "message": "Success"
+        }
+
+    + Invalid Response
+        {
+            "status": false
+            "status_code": 10000
+            "data": ""
+            "message": "No token provided"
+        }
+
+## Restore [/restore]
+
+### Restore [POST]
+
++ Request
+    {
+        "snapshot_id":"<snapshot id>", //required
+        "restore_id": "<resotreid>" //optional Note: required if restore got halted
+    }
+
+# Group General
+
+## Notifications [/notifications]
+
+### Get notifications [GET]
+
++ Request 
+    + `type` - 'export/import',
+    + `is_active` - 'true' will return only active notifications, else all notifications
+    + `page` - page number for pagination
+    + `limit` - limit for records on the page
+   
++ Response 200 
+    + Valid Response
+        {
+          "status": true,
+          "status_code": 10001,
+          "data": {
+            "total": 1,
+            "data": [
+              {
+                "_id": "57075a5519a3962d6bc47b8f",
+                "user_id": "56e667e9c8c32bc315389357",
+                "type": "export",
+                "sub_type": "CSV",
+                "status": "Completed",
+                "import_from": "<account name>",
+                "__v": 0,
+                "message": {
+                  "filename": "1460099670252.csv"
+                },
+                "logged_on": "2016-04-08T07:14:29.221Z",
+                "is_active": true
+              }
+            ],
+            "page": 0,
+            "current_count": 1
+          },
+          "message": "Success"
+        }
+
+    + Invalid Response
+        {
+            "status": false
+            "status_code": 10002
+            "data": ""
+            "message": "No token provided"
+        }  
+
+## Update notifications [/notifications]
+
+### Update notifications [POST]
+
++ Request 
+    {
+        action: "read/unread/delete", // required
+        log_ids: [<log_id>], //optional
+        apply_all: true// optional - this will be applied to all notifications for that user
+    }
+   
++ Response 200 
+    + Valid Response
+        {
+          "status": true,
+          "status_code": 10001,
+          "data": {
+            "total": 1,
+            "data": [
+              {
+                "_id": "57075a5519a3962d6bc47b8f",
+                "user_id": "56e667e9c8c32bc315389357",
+                "type": "export",
+                "sub_type": "CSV",
+                "status": "Completed",
+                "__v": 0,
+                "message": {
+                  "filename": "1460099670252.csv"
+                },
+                "logged_on": "2016-04-08T07:14:29.221Z",
+                "is_active": true
+              }
+            ],
+            "page": 0,
+            "current_count": 1
+          },
+          "message": "Success"
+        }
+
+    + Invalid Response
+        {
+            "status": false
+            "status_code": 10002
+            "data": ""
+            "message": "No token provided"
+        }  
+
+
+## Download file [/download]
+
+### Download file [GET]
+
++ Request 
+    + `authorization` - token with 'bearer' key prepended
+    + `type` - 'export/attachment',
+    + `filename` - system filename having timestamp to download
+   
++ Response 200 
+    + Valid Response
+        File object
+
+
+    + Invalid Response
+        {
+            "status": false
+            "status_code": 10002
+            "data": ""
+            "message": "No token provided"
+        }
+
+
+## NAS Details [/general/nasDetail]
+
+### Get NAS details [GET]
+
++ Request 
+    + `authorization` - token with 'bearer' key prepended
+    
+   
++ Response 200 
+    + Valid Response
+        {
+            "status": true,
+            "status_code": 10025,
+            "data": {
+                "port": '8080',
+                "protocol": 'http',            
+            },
+            "message": "NAS details"
+        }
+
+    + Invalid Response
+        {
+            "status": false,
+            "status_code": 10026,
+            "data": {
+                "killed": false,
+                "code": 127,
+                "signal": null,
+                "cmd": "qbus get com.qnap.qts/qts_url"
+            },
+            "message": "Error in getting details"
+        }    
+
+## NAS App status [/nas_app_info]
+
+### Get NAS application info [GET]
+
++ Request 
+    + `app_name` - application name
+    + `key` - configuration key name, default 'Enable' - (App installed and enabled)
+    
+   
++ Response 200 
+    + Valid Response
+        {
+            "status": true,
+            "status_code": 10001,
+            "data": {
+                "value": '' // value of key provided or default key 'Enable'
+            },
+            "message": "Success"
+        }
+
+    + Invalid Response
+        {
+            "status": false,
+            "status_code": 10027,
+            "data": 'App not installed yet',
+            "message": "App not installed yet"
+        }
+
+## NAS file Upload [/nasupload]
+
+### NAS Upload [POST]
+
++ Request 
+    {
+        "file_details": [{"path": "/Web/phpMyAdmin", "name":"changelog.php"}], 
+        "type":"attachment||profile_pic||import", 
+        "contact_id": "<contact id optional>"
+    } 
+   
++ Response 200 
+    {
+        "status":true,
+        "status_code":10001,
+        "data":{"file_details" :[{"path":"/tmp/578ee4f8e3ac0a0900c5eb07/123/attachments/1469178257427.php", "label":"changelog.php"}], "contact_id": "<contactid>"},
+        "message":"Success"
+    }
+    
+
+## Data Mapping Template  [/imports/template]
+
+This api will be used for CSV imports.
+
+This will give the user an option to map default template or create template
+
+### Get Template [GET]
+    
++ Request
+    is_default: 1, //if 1 only default will be given or else all the entries will be given
+
++ Response 200    
+    {
+        "status":true,
+        "status_code":11013,
+        "data":[{"_id":"578c748c48542e16228a6f00","template_name":"Qcontactz CSV","delimiter":"|||","__v":0,"is_default":true,"is_active":true,"mapper":[{"display_name":"First Name","map_name":"First Name","field_value":"fname","_id":"578c748c48542e16228a6f21"},{"display_name":"Middle Name","map_name":"Middle Name","field_value":"mname","_id":"578c748c48542e16228a6f20"},{"display_name":"Last Name","map_name":"Last Name","field_value":"lname","_id":"578c748c48542e16228a6f1f"},{"display_name":"Nickname","map_name":"Nickname","field_value":"nickname","_id":"578c748c48542e16228a6f1e"},{"display_name":"Title","map_name":"Title","field_value":"title","_id":"578c748c48542e16228a6f1d"},{"display_name":"Email-Home","map_name":"Email-Home","field_value":"emails-HOME","_id":"578c748c48542e16228a6f1c"},{"display_name":"Email-Office","map_name":"Email-Office","field_value":"emails-OFFICE","_id":"578c748c48542e16228a6f1b"},{"display_name":"Email-Other","map_name":"Email-Other","field_value":"emails-OTHER","_id":"578c748c48542e16228a6f1a"},{"display_name":"Phone-Home","map_name":"Phone-Home","field_value":"phones-HOME","_id":"578c748c48542e16228a6f19"},{"display_name":"Phone-Office","map_name":"Phone-Office","field_value":"phones-OFFICE","_id":"578c748c48542e16228a6f18"},{"display_name":"Phone-Mobile","map_name":"Phone-Mobile","field_value":"phones-MOBILE","_id":"578c748c48542e16228a6f17"},{"display_name":"Phone-Main","map_name":"Phone-Main","field_value":"phones-MAIN","_id":"578c748c48542e16228a6f16"},{"display_name":"Phone-Home Fax","map_name":"Phone-Home Fax","field_value":"phones-HOME_FAX","_id":"578c748c48542e16228a6f15"},{"display_name":"Phone-Business Fax","map_name":"Phone-Business Fax","field_value":"phones-BUSINESS_FAX","_id":"578c748c48542e16228a6f14"},{"display_name":"Phone-Other","map_name":"Phone-Other","field_value":"phones-OTHER","_id":"578c748c48542e16228a6f13"},{"display_name":"Company","map_name":"Company","field_value":"company_name","_id":"578c748c48542e16228a6f12"},{"display_name":"Address-Home","map_name":"Address-Home","field_value":"addresses-HOME","_id":"578c748c48542e16228a6f11"},{"display_name":"Address-Office","map_name":"Address-Office","field_value":"addresses-OFFICE","_id":"578c748c48542e16228a6f10"},{"display_name":"Webpage","map_name":"Webpage","field_value":"web_pages","_id":"578c748c48542e16228a6f0f"},{"display_name":"IM-Skype","map_name":"IM-Skype","field_value":"im-SKYPE","_id":"578c748c48542e16228a6f0e"},{"display_name":"IM-Facebook","map_name":"IM-Facebook","field_value":"im-FACEBOOK","_id":"578c748c48542e16228a6f0d"},{"display_name":"IM-QQ","map_name":"IM-QQ","field_value":"im-QQ","_id":"578c748c48542e16228a6f0c"},{"display_name":"IM-Line","map_name":"IM-Line","field_value":"im-LINE","_id":"578c748c48542e16228a6f0b"},{"display_name":"IM-Wechat","map_name":"IM-Wechat","field_value":"im-WECHAT","_id":"578c748c48542e16228a6f0a"},{"display_name":"IM-Yahoo","map_name":"IM-Yahoo","field_value":"im-YAHOO","_id":"578c748c48542e16228a6f09"},{"display_name":"IM-GTalk","map_name":"IM-GTalk","field_value":"im-GOOGLE_TALK","_id":"578c748c48542e16228a6f08"},{"display_name":"IM-Custom","map_name":"IM-Custom","field_value":"im-","_id":"578c748c48542e16228a6f07"},{"display_name":"Date-Birthday","map_name":"Date-Birthday","field_value":"events-undefined","_id":"578c748c48542e16228a6f06"},{"display_name":"Date-Anniversary","map_name":"Date-Anniversary","field_value":"events-undefined","_id":"578c748c48542e16228a6f05"},{"display_name":"Date-Custom","map_name":"Date-Custom","field_value":"events-","_id":"578c748c48542e16228a6f04"},{"display_name":"Note","map_name":"Note","field_value":"note","_id":"578c748c48542e16228a6f03"},{"display_name":"Custom Field","map_name":"Custom Field","field_value":"others","_id":"578c748c48542e16228a6f02"},{"display_name":"Custom Value","map_name":"Custom Value","field_value":"others","_id":"578c748c48542e16228a6f01"}]}],
+        "message":"Template List"
+    }
+
++ Response 403
+    {
+        "status": false,
+        "status_code": 10000,
+        "data": '',
+        "message": "Db connection error"
+    }
+
+### Save Template [POST]
+    
++ Request
+    {"mapper": [{"display_name": "First Name", "map_name": "First", "field_value": "fname"},{"display_name": "Last Name", "map_name": "Last", "field_value": "lname"},{"display_name": "Middle Name", "map_name": "Middle", "field_value": "mname"}], "delimiter": "abc", "template_name": "Abcdefa"}
+
++ Response 200 
+    + Valid Response
+        {
+            "status": true,
+            "status_code": 10001,
+            "data": '',
+            "message": "Success"
+        }
+
+    + Invalid Response
+        {
+            "status": false,
+            "status_code": 10027,
+            "data": 'App not installed yet',
+            "message": "App not installed yet"
+        }
+
+## Get Last Sync [/last-sync/<device_id>]
+
+### Last Sync [GET]
+
++ Request 
+    device_id: Mobile device id
+   
++ Response 200 
+    {
+        status: true,
+        status_code: 10001,
+        data: {
+            _id: "57a05306d9ce54a05c70fe98",
+            user_id: "57775e03d281189f601152be",
+            device_id: "123123123",
+            transaction_id: "57a052f59935c9995c216c4a",
+            logged_on: "2016-08-02T08:00:06.469Z"
+        },
+        message: "Success"
+    }
+
+## Get Sync Time List [/imports/synctimelist]
+
+### Sync Time List [GET]
+
+This api will be used to get the drop down data for the sync timing.
+In order to modify the sync timings, send the value field to Modify Sync Api.
+
++ Response 200 
+    {
+        "status":true,
+        "status_code":10001,
+        "data":[{"label":"Never","value":-1,"key":"LABEL_NEVER"},{"label":"Every 10 mins after the previous import has finished","value":600,"key":"LABEL_TEN_MIN"},{"label":"Every 1 hr after the previous import has finished","value":3600,"key":"LABEL_ONE_HR"},{"label":"Every 1 day after the previous import has finished","value":86400,"key":"LABEL_ONE_DAY","is_default":true},{"label":"Every 1 week after the previous import has finished","value":604800,"key":"LABEL_ONE_WEEK"}],
+        "message":"Success"
+    }
+
+
+# Group Backgound Tasks
+
+## Socket IO connection and handling
+
+To authenticate user send same auth token in query while connect, which used in api
+
+### Background task events
++ Url 
+    + Use "hostname:post" to connect to socket from api doc url
+
++ task:list
+    + It will return list of all background tasks for current user on every connect only once.
+
++ task:progress
+    It will publish single task with following types
+    + Task:InProgress
+        + In this status actual progress count of task will return.
+    + Task:Waiting
+        + In this status task is added in queue, need to add into list
+    + Task:Completed
+        + In this status task completed, need to remove from your list
+
+

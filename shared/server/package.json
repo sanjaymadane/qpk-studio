@@ -1,0 +1,22 @@
+{
+  "name": "qpk",
+  "version": "0.9.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "curlrequest": "^0.5.7",
+    "ejs": "^2.5.1",
+    "express": "^4.14.0",
+    "express-jwt": "^3.4.0",
+    "inireader": "^1.2.0",
+    "jsonwebtoken": "^7.1.9",
+    "mongoose": "^4.5.10",
+    "morgan": "^1.7.0",
+    "underscore": "^1.8.3",
+    "xml2json": "^0.10.0"
+  }
+}
