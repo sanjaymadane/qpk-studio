@@ -13,7 +13,24 @@ var express = require('express'),
 var common = require('../../helpers/common_helper');
 
 router.route('/')
-  // GET - get all Projects
+  /**
+   * @api {get} /projects Get list of all projects of user
+   * @apiName Project List
+   * @apiGroup Project
+   
+   *
+   * @apiSuccess {String} _id Project id.
+   * @apiSuccess {String} name Project name.
+   *
+   * @apiSuccessExample {json} Success-Response:
+   *     HTTP/1.1 200 OK
+   *     {
+   *         "status": true,
+   *         "status_code": 10001,
+   *         "data": [],
+   *         "message": "Success"
+   *     }   
+   */
   .get(function(req, res, next) {
     // Select only required fields if passed
     var fields = common.filter_fields(req.query.fields, []);

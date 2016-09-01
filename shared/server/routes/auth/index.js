@@ -29,8 +29,22 @@ function removeUser(user_id, cb){
     cb('success');
   });
 }
+/**
+ * @api {post} /authenticate Authenticate User
+ * @apiName Authenticate
+ * @apiGroup User
+ *
+ * @apiParam {String} username Users username.
+ * @apiParam {String} password Users password.
+ *
+ * @apiSuccess {String} user_id UserId of the User.
+ * @apiSuccess {String} username  Username of the User.
+ * @apiSuccess {String} sid  Nas Session id of the User.
+ * @apiSuccess {String} token  Auth token of the User.
+ * @apiSuccess {String} authPassed  Auth pass status of the User.
+ */
 router.route('/')
-  // POST - Authenticate user, Need - username,password, source and remme
+  // POST - Authenticate user, Need - username, password, source and remme
   .post(function(req, res, next) {
     var isKeepMeSignedIn = req.body.keep_me_signedin || false;
     var expTime = '8 days';

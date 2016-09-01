@@ -22,7 +22,6 @@ SERVER1_CONTAINER=$(echo $info | awk {'print $7'} | awk -F '=' {'print $2'})
 SERVER2_CONTAINER=$(echo $info | awk {'print $8'} | awk -F '=' {'print $2'})
 
 create_container() {
-  echo "COming in create container"
   name=$1
   conf=$2
   image=$3
@@ -45,7 +44,6 @@ create_container() {
   
   if test "$name" = "$SERVER1_CONTAINER"
   then
-    echo "Coming in node container"    
     docker run -d $mountlocaltime  -p 9010:9010 -v /share/Public/.cache_qpk:/server/public/nas_cache -v $QPKG_PATH/server/:/server $SYSTEM_MOUNT -v /etc/config/:/app_config --name $SERVER1_CONTAINER --entrypoint /bin/bash $image:$ver /server/start_server.sh
   fi
 }
