@@ -14,7 +14,7 @@ var common = require('../../helpers/common_helper');
 
 router.route('/')
   /**
-   * @api {get} /projects Get list of all projects of user
+   * @api {get} /projects Get project list
    * @apiName Project List
    * @apiGroup Project
    
@@ -54,7 +54,26 @@ router.route('/')
       .skip(page*limit);
   })
   
-  //POST - create new Project
+  /**
+   * @api {post} /projects Create new project
+   * @apiName Create Project
+   * @apiGroup Project
+   
+   *
+   * @apiParamExample {json} Request-Example:
+   *     {
+   *       "name": "My Hello World"
+   *     }
+   *
+   * @apiSuccessExample {json} Success-Response:
+   *     HTTP/1.1 200 OK
+   *     {
+   *         "status": true,
+   *         "status_code": 10001,
+   *         "data": "57c80de9c7db5c7f7710a5f5",
+   *         "message": "Success"
+   *     }   
+   */
   .post(function(req, res) {
     req.body.user_id = req.user_auth.user_id;
     mongoose.model('Project').findOne({name: req.body.name, user_id:req.user_auth.user_id}, function (err, project) {

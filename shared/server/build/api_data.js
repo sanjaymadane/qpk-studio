@@ -1,8 +1,36 @@
 define({ "api": [
   {
+    "type": "post",
+    "url": "/projects",
+    "title": "Create new project",
+    "name": "Create_Project",
+    "group": "Project",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n  \"name\": \"My Hello World\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"status\": true,\n    \"status_code\": 10001,\n    \"data\": \"57c80de9c7db5c7f7710a5f5\",\n    \"message\": \"Success\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/projects/index.js",
+    "groupTitle": "Project"
+  },
+  {
     "type": "get",
     "url": "/projects",
-    "title": "Get list of all projects of user",
+    "title": "Get project list",
     "name": "Project_List",
     "group": "Project",
     "success": {
