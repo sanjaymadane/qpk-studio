@@ -18,7 +18,7 @@ var common = require('../helpers/common_helper');
 var nas_auth = require('../auth/nas_auth');
 
 module.exports = function(app){	
-	app.use('/api/' + config.api_version, express_jwt({secret: config.secret, credentialsRequired: false}),function(req, res, next) {
+	app.use('/', express_jwt({secret: config.secret, credentialsRequired: false}),function(req, res, next) {
 		var promise = new Promise(function(resolve, reject){
 			var token = req.body.authorization || req.query.authorization || req.headers.authorization;  
 			if(req.query.username && req.query.username != '' && req.query.sid && req.query.sid != ''){
@@ -41,8 +41,6 @@ module.exports = function(app){
 				    			req.user_auth = {
 					          user_id: user._id,
 					          username: user.username,
-					          is_nas_user: user.is_nas_user,
-					          is_tutorial_displayed: user.is_tutorial_displayed || false,
 					          sid: req.query.sid
 					        };
 					        resolve(true);
@@ -54,7 +52,7 @@ module.exports = function(app){
 		      });
 				} else if (token && token.split(' ')[0] && token.split(' ')[0].toLowerCase() == 'bearer') {
 
-					jwt.verify(token.split(' ')[1], config.secret, function(err, decoded) {      
+					jwt.verify(token.split(' ')[1], config.secret, function(err, decoded) {   
 						if (err) {
 					  	resolve(false);
 					  } else {
@@ -66,8 +64,9 @@ module.exports = function(app){
 			          sid : decoded.sid
 			        };
 					    nas_auth.login(authLoginParams, function(stdout, meta){
-					    	if(stdout && stdout.QDocRoot && ( stdout.QDocRoot.authPassed == 1 || stdout.QDocRoot.authPassed == '1')){				    		
+					    	if(stdout && stdout.QDocRoot && ( stdout.QDocRoot.authPassed == 1 || stdout.QDocRoot.authPassed == '1')){				
 					    		req.user_auth = decoded;
+					    		console.log(req.user_auth);    		
 					        resolve(true);					        
 					    	} else {
 					    		resolve(false);

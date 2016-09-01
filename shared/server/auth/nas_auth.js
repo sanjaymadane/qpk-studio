@@ -15,6 +15,7 @@ var iniReader = require('inireader');
 
 module.exports = {
   getNasConfig: function(block_name, config_name, callback){   
+    return callback(null,null);
     block_name = block_name || 'System';
     config_name = config_name || 'Web Access Port';
     var parser = new iniReader.IniReader();
@@ -24,6 +25,7 @@ module.exports = {
   },
 
   getQPKGConfig: function(block_name, config_name, callback){  
+    return callback(null,null);
     block_name = block_name || 'System';
     config_name = config_name || 'Web Access Port';
     var parser = new iniReader.IniReader();
@@ -41,7 +43,7 @@ module.exports = {
     });
     this.getNasConfig('System', 'Web Access Port', function(err, intPort){      
       intPort = intPort || 8080;
-      curl.request({url: config.nas_protocol +"://"+config.server_ip+":"+intPort+"/cgi-bin/authLogin.cgi?"+queryString}, function (err, stdout, meta) {
+      curl.request({url: "http://"+config.server_ip+":"+intPort+"/cgi-bin/authLogin.cgi?"+queryString}, function (err, stdout, meta) {
         var options = {
           object: true,
           reversible: false,
@@ -101,21 +103,6 @@ module.exports = {
         };
         var stdout = parser.toJson(stdout,options);
         callback(err, stdout, meta);
-      });
-    });
-  },
-  processFileManagerAPI: function(fields,callback){
-    fields.logout = '1';
-    var queryString = "";
-    var stdout={},meta = {};
-    _.mapObject(fields, function(val, key) {
-      queryString += key+"="+val + "&";
-      return val;
-    });
-    this.getNasConfig('System', 'Web Access Port', function(err, intPort){
-      intPort = intPort || 8080;
-      curl.request({url: config.nas_protocol +"://"+config.server_ip+":"+intPort+"/cgi-bin/filemanager/utilRequest.cgi?"+ queryString}, function (err, stdout) {
-        callback(err, stdout);
       });
     });
   }
