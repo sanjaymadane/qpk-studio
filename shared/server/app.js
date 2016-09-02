@@ -21,6 +21,10 @@ var app = express();
 var server = require('./setup/server_setup')(app, true).init(express)
     , db = require('./setup/db_setup')().init();
 
+app.use('/docs', function(req, res){
+	console.log('I am here');
+  res.render('doc/index.html');
+});
 
 // Apply cors middlewares
 var cors_middleware = require('./middlewares/cors_middleware')(app);

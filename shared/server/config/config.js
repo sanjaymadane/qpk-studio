@@ -3,7 +3,9 @@
 /*
  * Application configuration file
  */
-var SERVER_IP = '10.0.3.1';
+console.log(process.env.QCONTACTZ_SERVER_IP + "test");
+var SERVER_IP = process.env.QCONTACTZ_SERVER_IP || '172.17.30.151';
+console.log(SERVER_IP);
 module.exports = {
   'secret': 'crazyalarm1',
   'database': 'mongodb://'+SERVER_IP+':27018/qpk',
