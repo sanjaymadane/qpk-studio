@@ -13,13 +13,8 @@ info=$(cat < $QPKG_PATH/container_ver.conf)
 NODE_NAME=$(echo $info | awk {'print $1'} | awk -F '=' {'print $2'})
 NODE_VERSION=$(echo $info | awk {'print $2'} | awk -F '=' {'print $2'})
 
-RABBITMQ_NAME=$(echo $info | awk {'print $3'} | awk -F '=' {'print $2'})
-RABBITMQ_VERSION=$(echo $info | awk {'print $4'} | awk -F '=' {'print $2'})
-
-RABBITMQ_CONTAINER=$(echo $info | awk {'print $5'} | awk -F '=' {'print $2'})
-MONGO_CONTAINER=$(echo $info | awk {'print $6'} | awk -F '=' {'print $2'})
-SERVER1_CONTAINER=$(echo $info | awk {'print $7'} | awk -F '=' {'print $2'})
-SERVER2_CONTAINER=$(echo $info | awk {'print $8'} | awk -F '=' {'print $2'})
+MONGO_CONTAINER=$(echo $info | awk {'print $3'} | awk -F '=' {'print $2'})
+SERVER1_CONTAINER=$(echo $info | awk {'print $4'} | awk -F '=' {'print $2'})
 
 create_container() {
   name=$1
