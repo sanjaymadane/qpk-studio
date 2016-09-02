@@ -4,6 +4,6 @@ var gulp = require('gulp'),
 gulp.task('doc', function(done){
           apidoc({
             src: "routes/",
-            dest: "build/"
+            dest: "docs/"
           },done);
 });

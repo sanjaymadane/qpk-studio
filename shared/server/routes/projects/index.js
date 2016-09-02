@@ -57,8 +57,7 @@ router.route('/')
   /**
    * @api {post} /projects Create new project
    * @apiName Create Project
-   * @apiGroup Project
-   
+   * @apiGroup Project   
    *
    * @apiParamExample {json} Request-Example:
    *     {
@@ -109,7 +108,25 @@ router.param('id', function(req, res, next, id) {
 });
 
 router.route('/:id')
-  // GET - Project by id
+  /**
+   * @api {get} /projects/:id Get project details
+   * @apiName Get project
+   * @apiGroup Project
+   *
+   * @apiParam {String} id Project id.
+   *
+   * @apiSuccess {String} _id Project id.
+   * @apiSuccess {String} name Project name.
+   *
+   * @apiSuccessExample {json} Success-Response:
+   *     HTTP/1.1 200 OK
+   *     {
+   *         "status": true,
+   *         "status_code": 10001,
+   *         "data": {},
+   *         "message": "Success"
+   *     }   
+   */
   .get(function(req, res) {
     // Select only required fields if passed
     var fields = common.filter_fields(req.query.fields,[]);
@@ -121,7 +138,27 @@ router.route('/:id')
       }
     });
   })
-  //PUT - update a Project by ID
+  /**
+   * @api {put} /projects/:id Update project details
+   * @apiName Update project
+   * @apiGroup Project
+   *
+   * @apiParam {String} id Project id.
+   *
+   * @apiParamExample {json} Request-Example:
+   *     {
+   *       "name": "My Hello World"
+   *     }
+   *
+   * @apiSuccessExample {json} Success-Response:
+   *     HTTP/1.1 200 OK
+   *     {
+   *         "status": true,
+   *         "status_code": 10001,
+   *         "data": {},
+   *         "message": "Success"
+   *     }   
+   */
   .put(function(req, res) {
     mongoose.model('Project').findOne({name: req.body.name,user_id:req.user_auth.user_id}, function (err, project) {
       if (err) {
@@ -141,7 +178,22 @@ router.route('/:id')
       }
     });
   })
-  //DELETE - soft delete Project by ID
+  /**
+   * @api {delete} /projects/:id Delete project
+   * @apiName Delete project
+   * @apiGroup Project
+   *
+   * @apiParam {String} id Project id.
+   *
+   * @apiSuccessExample {json} Success-Response:
+   *     HTTP/1.1 200 OK
+   *     {
+   *         "status": true,
+   *         "status_code": 10001,
+   *         "data": {},
+   *         "message": "Success"
+   *     }   
+   */
   .delete(function (req, res){
     mongoose.model('Project').findById(req.id, function (err, project) {
       if (err || !project) {

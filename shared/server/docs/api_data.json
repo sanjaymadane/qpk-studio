@@ -28,6 +28,88 @@
     "groupTitle": "Project"
   },
   {
+    "type": "delete",
+    "url": "/projects/:id",
+    "title": "Delete project",
+    "name": "Delete_project",
+    "group": "Project",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Project id.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"status\": true,\n    \"status_code\": 10001,\n    \"data\": {},\n    \"message\": \"Success\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/projects/index.js",
+    "groupTitle": "Project"
+  },
+  {
+    "type": "get",
+    "url": "/projects/:id",
+    "title": "Get project details",
+    "name": "Get_project",
+    "group": "Project",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Project id.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "_id",
+            "description": "<p>Project id.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Project name.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"status\": true,\n    \"status_code\": 10001,\n    \"data\": {},\n    \"message\": \"Success\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/projects/index.js",
+    "groupTitle": "Project"
+  },
+  {
     "type": "get",
     "url": "/projects",
     "title": "Get project list",
@@ -56,6 +138,45 @@
         {
           "title": "Success-Response:",
           "content": "HTTP/1.1 200 OK\n{\n    \"status\": true,\n    \"status_code\": 10001,\n    \"data\": [],\n    \"message\": \"Success\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/projects/index.js",
+    "groupTitle": "Project"
+  },
+  {
+    "type": "put",
+    "url": "/projects/:id",
+    "title": "Update project details",
+    "name": "Update_project",
+    "group": "Project",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Project id.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n  \"name\": \"My Hello World\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"status\": true,\n    \"status_code\": 10001,\n    \"data\": {},\n    \"message\": \"Success\"\n}",
           "type": "json"
         }
       ]
