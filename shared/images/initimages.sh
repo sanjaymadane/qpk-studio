@@ -42,5 +42,4 @@ check_image_name() {
     fi
 }
 
-check_image_name $RABBITMQ_NAME $RABBITMQ_VERSION
 check_image_name $NODE_NAME $NODE_VERSION

@@ -23,9 +23,8 @@ SERVER2_CONTAINER=$(echo $info | awk {'print $8'} | awk -F '=' {'print $2'})
 
 create_container() {
   name=$1
-  conf=$2
-  image=$3
-  ver=$4
+  image=$2
+  ver=$3
   mkdir -p .cache_qpk
   docker ps -a | grep $name >/dev/null
   RET=$?
@@ -48,5 +47,5 @@ create_container() {
   fi
 }
 
-create_container $MONGO_CONTAINER mongo.conf $NODE_NAME $NODE_VERSION
-create_container $SERVER1_CONTAINER server1.conf $NODE_NAME $NODE_VERSION
+create_container $MONGO_CONTAINER $NODE_NAME $NODE_VERSION
+create_container $SERVER1_CONTAINER $NODE_NAME $NODE_VERSION
