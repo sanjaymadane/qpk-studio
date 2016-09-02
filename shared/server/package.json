@@ -16,6 +16,7 @@
     "jsonwebtoken": "^7.1.9",
     "mongoose": "^4.5.10",
     "morgan": "^1.7.0",
+    "ssh2shell": "^1.5.3",
     "underscore": "^1.8.3",
     "xml2json": "^0.10.0"
   },
