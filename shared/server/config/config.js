@@ -10,5 +10,8 @@ module.exports = {
   'api_version': 'v1',
   'token_timeout': 900000,
   'server_ip': SERVER_IP,
+  'server_ssh_port': 22,
+  'server_username': 'admin',
+  'server_password': 'admin',
   'port': 9010
 };

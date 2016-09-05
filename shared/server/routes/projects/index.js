@@ -10,7 +10,8 @@ var express = require('express'),
     mongoose = require('mongoose'),
     _ = require('underscore');
 // Load helpers
-var common = require('../../helpers/common_helper');
+var common = require('../../helpers/common_helper'),
+  shell = require('../../helpers/shell_helper');
 
 router.route('/')
   /**
@@ -84,7 +85,9 @@ router.route('/')
             if (err) {
               res.json(common.pretty(false, 10000, err));
             } else {
-              res.json(common.pretty(true, 10001, project._id));
+              shell.create_project(req.body).then(function(resp){
+                res.json(common.pretty(true, 10001, project._id));
+              });              
             }
           }); 
         } else{ 
