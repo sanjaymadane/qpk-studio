@@ -4,7 +4,7 @@
  * Route configuration for the RDash module.
  */
 var app = angular
-.module('RDash', ['ui.bootstrap', 'ui.router', 'ngCookies'])
+.module('RDash', ['ui.bootstrap', 'ui.router', 'ngCookies','ngFileUpload'])
 .config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
 

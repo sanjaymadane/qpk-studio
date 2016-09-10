@@ -13,5 +13,6 @@ module.exports = {
   'server_ssh_port': 22,
   'server_username': 'admin',
   'server_password': 'admin',
+  'media_base_path':  __dirname + '/../public/uploads/',
   'port': 9010
 };

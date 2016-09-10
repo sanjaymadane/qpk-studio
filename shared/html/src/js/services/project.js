@@ -9,7 +9,6 @@ app.factory('Project',['Base', function(Base){
 		createProject: function(params, callback){
 			Base.post('/projects', params)
 			.then(function(response){
-				console.log(response);
 				return callback(null, response);
 			})
 		}

@@ -48,6 +48,7 @@ var cors_middleware = require('./middlewares/cors_middleware')(app);
 // Auth API
 app.use('/authenticate', require('./routes/auth'));
 app.use('/projects', require('./routes/projects'));
+app.use('/file', require('./routes/file'));
 
 
 // Apply error handler middleware
