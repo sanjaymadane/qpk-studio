@@ -13,9 +13,7 @@ module.exports = {
           password:     config.server_password
         },
         commands:           [
-            "cd /share/CACHEDEV1_DATA/.qpkg/qpk/server/", 
-            "cd projects",
-            "cd " + options.name,
+            "cd "+ projects_path + options.name, 
             "qbuild"
             ], //array() of command strings 
         msg:                {
