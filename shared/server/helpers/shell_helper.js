@@ -106,7 +106,7 @@ module.exports = {
       });
       replace({
         regex: "#QPKG_WEBUI=",
-        replacement: "QPKG_WEBUI=\"" + options.qpkg_name + "\"",
+        replacement: "QPKG_WEBUI=\"/" + options.qpkg_name + "\"",
         paths: [config.projects_path + '' + options.qpkg_name + '/qpkg.cfg'],
         recursive: true,
         silent: true,
