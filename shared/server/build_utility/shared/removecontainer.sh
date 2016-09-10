@@ -21,7 +21,8 @@ check_container_name() {
     else
         echo "enter not matching">> /tmp/$QPKG_NAME.log
     fi
-    docker images | grep $imgname | awk '{print $3}' | xargs docker rmi
+
+    #docker images | grep $imgname | awk '{print $3}' | xargs docker rmi
 }
 
 check_container_name $CONTAINER1 $IMAGE_NAME $IMAGE_VERSION

@@ -11,6 +11,7 @@ var projectSchema = new mongoose.Schema({
   name: String,
   user_id: String,
   is_active: {type: Boolean, default: true },
+  qpkg_path: String,
   created_on: {type: Date, default: Date.now },
   updated_on: {type: Date, default: Date.now }
 });

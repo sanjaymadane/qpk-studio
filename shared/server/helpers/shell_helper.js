@@ -13,7 +13,8 @@ module.exports = {
           password:     config.server_password
         },
         commands:           [
-            "cd "+ projects_path + options.name, 
+            "cd /mnt/ext/opt/qpk/server/projects/"+ options.name, 
+            "chmod -R 777 shared/html/",
             "qbuild"
             ], //array() of command strings 
         msg:                {
@@ -51,11 +52,13 @@ module.exports = {
          //connection object gives access to close the shell using connection.end() 
         },
         onEnd:               function( sessionText, sshObj ) {
+          resolve(true);
          //optional code to run at the end of the session 
          //sessionText is the full text for this hosts session 
          //sshObj.msg.send(sessionText); 
         },
         onError:            function(err, type, close = false, callback) {
+          resolve(false);
           console.log(err);
          //optional code to run when an error event is raised 
          //sshObj object and sshObj.msg.send() is not available when event handler is defined in the host object. 
@@ -68,8 +71,7 @@ module.exports = {
           SSH       = new SSH2Shell(host);
        
       //Start the process 
-      SSH.connect();
-      resolve(true);
+      SSH.connect();      
     });
   },
   replace_strings: function(options) {
@@ -93,9 +95,7 @@ module.exports = {
         replacement: "QPKG_NAME=\"" + options.qpkg_name + "\"",
         paths: [config.projects_path + '' + options.qpkg_name + '/qpkg.cfg', 
             config.projects_path + '' + options.qpkg_name + '/package_routines', 
-            config.projects_path + '' + options.qpkg_name + '/shared/'+ options.qpkg_name + '.sh'
-            // ,config.projects_path + '' + options.qpkg_name + '/shared/images/initimages.sh',
-            // ,config.projects_path + '' + options.qpkg_name + '/shared/init/initcontainer.sh'
+            config.projects_path + '' + options.qpkg_name + '/shared/app.sh'
             ],
         recursive: true,
         silent: true,

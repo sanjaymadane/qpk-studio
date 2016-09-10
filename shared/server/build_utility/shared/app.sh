@@ -58,6 +58,15 @@ current_apache_version=$($APACHE_PATH -v | awk  -F: '/Apache/{print $2}' | awk -
 
 
 add_apache_cfg() {
+  sed -i "/ProxyPreserveHost On/a ProxyPassReverse /$QPKG_NAME http://127.0.0.1/$QPKG_NAME" ${PROXY_CONF}
+  sed -i "/ProxyPreserveHost On/a ProxyPassReverse /$QPKG_NAME http://127.0.0.1/$QPKG_NAME" ${PROXY_CONF_TPLT}
+  sed -i "/ProxyPreserveHost On/a ProxyPassReverse /$QPKG_NAME http://127.0.0.1/$QPKG_NAME" ${PROXY_SSL_CONF}
+  sed -i "/ProxyPreserveHost On/a ProxyPassReverse /$QPKG_NAME http://127.0.0.1/$QPKG_NAME" ${PROXY_SSL_CONF_TPLT}
+  sed -i "/ProxyPreserveHost On/a ProxyPass /$QPKG_NAME http://127.0.0.1/$QPKG_NAME retry=0" ${PROXY_CONF}
+  sed -i "/ProxyPreserveHost On/a ProxyPass /$QPKG_NAME http://127.0.0.1/$QPKG_NAME retry=0" ${PROXY_CONF_TPLT}
+  sed -i "/ProxyPreserveHost On/a ProxyPass /$QPKG_NAME http://127.0.0.1/$QPKG_NAME retry=0" ${PROXY_SSL_CONF}
+  sed -i "/ProxyPreserveHost On/a ProxyPass /$QPKG_NAME http://127.0.0.1/$QPKG_NAME retry=0" ${PROXY_SSL_CONF_TPLT}
+  
   sed -i "/ProxyPreserveHost On/a ProxyPassReverse /$QPKG_NAME http://127.0.0.1:$CONTAINER1_PORT" ${PROXY_CONF}
   sed -i "/ProxyPreserveHost On/a ProxyPassReverse /$QPKG_NAME http://127.0.0.1:$CONTAINER1_PORT" ${PROXY_CONF_TPLT}
   sed -i "/ProxyPreserveHost On/a ProxyPassReverse /$QPKG_NAME http://127.0.0.1:$CONTAINER1_PORT" ${PROXY_SSL_CONF}
@@ -70,8 +79,8 @@ add_apache_cfg() {
 if [ $(expr $current_apache_version \>\= '2.3') -eq 1 ];then
   cat > /etc/config/apache/extra/apache-qpkg-$QPKG_NAME.conf <<EOF
 <IfModule alias_module>
-    Alias /${QPKG_NAME} "${QPKG_PATH}/html/build/"
-    <Directory "${QPKG_PATH}/html/build/">
+    Alias /${QPKG_NAME} "${QPKG_PATH}/html/"
+    <Directory "${QPKG_PATH}/html/">
         AllowOverride All
         Require all granted       
     </Directory>
@@ -80,8 +89,8 @@ EOF
 else
     cat > /etc/config/apache/extra/apache-qpkg-$QPKG_NAME.conf <<EOF
 <IfModule alias_module>
-    Alias /${QPKG_NAME} "${QPKG_PATH}/html/build/"
-    <Directory "${QPKG_PATH}/html/build/">
+    Alias /${QPKG_NAME} "${QPKG_PATH}/html/"
+    <Directory "${QPKG_PATH}/html/">
         AllowOverride All
         Order allow,deny
         Allow from all        
@@ -123,16 +132,18 @@ case "$1" in
       /bin/ln -sf $QPKG_PATH /mnt/ext/opt/$QPKG_NAME
       $QPKG_PATH/startcontainer.sh $QPKG_PATH
       add_apache_cfg
-      reload_apache 
-      ln -sf $QPKG_PATH/html/build $WEB_PATH/$QPKG_NAME
+
+      reload_apache       
+      ln -sf $QPKG_PATH/html $WEB_PATH/$QPKG_NAME
     ;;
 
   stop)
     : ADD STOP ACTIONS HERE
       $QPKG_PATH/stopcontainer.sh $QPKG_PATH
       remove_apache_cfg
-      reload_apache
-      rm -f $WEB_PATH/$QPKG_NAME
+
+      reload_apache  
+      rm -f $WEB_PATH/$QPKG_NAME    
     ;;
 
   restart)

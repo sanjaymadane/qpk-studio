@@ -102,17 +102,6 @@ router.route('/')
               .then(function(resolve){
                 return file_helper.deleteFilesOrDirectory(zipCopyPath);
               })
-              .then(function(resolve){
-                return new Promise(function(resolve) {
-                  var fs = require('fs');
-                  fs.rename(newpath + '/shared/app.sh', newpath + '/shared/'+req.body.name+'.sh', function (err) {
-                    if (err) {
-                      console.log(err);
-                    }
-                    resolve(true);
-                  });
-                });
-              })              
               .then(function() {
                 var options = {
                   qpkg_name: req.body.name,
@@ -127,7 +116,7 @@ router.route('/')
                 return shell.create_project(req.body);
               })
               .then(function(resp){
-                res.json(common.pretty(true, 10001, project._id));
+                res.json(common.pretty(true, 10001, project._id));              
               });             
             }
           }); 
@@ -138,6 +127,37 @@ router.route('/')
     });
     
   });
+
+
+router.route('/download')
+  .get(function(req, res, next){
+    var fs = require('fs');
+    var file = config.projects_path + req.query.project_name+ '/build/'+req.query.project_name+'_0.9.0.qpkg';
+    console.log(file);
+    
+    if(file != ""){
+      fs.exists(file, function(exists) {
+        if(exists){
+          res.download(file);
+        } else {
+          res.json(common.pretty(false, 10000, "File not found"));
+        }
+      });
+    }
+  });
+
+router.route('/batch_delete')
+  // POST - Batch delete Projects permanant
+  .post(function(req, res, next) {    
+    if(req.body.project_ids && req.body.project_ids.length > 0){
+      mongoose.model('Project').remove({_id: {$in: req.body.project_ids}}, function(err, data){
+        res.json(common.pretty(true, 10001, '')); 
+      });
+    } else{
+      res.json(common.pretty(false, 10000, ''));
+    }
+  });
+
 
 // Route middleware to validate :id
 router.param('id', function(req, res, next, id) {
@@ -252,18 +272,6 @@ router.route('/:id')
         });
       }
     });
-  });
-
-router.route('/batch_delete')
-  // POST - Batch delete Projects permanant
-  .post(function(req, res, next) {    
-    if(req.body.project_ids && req.body.project_ids.length > 0){
-      mongoose.model('Project').remove({_id: {$in: req.body.project_ids}}, function(err, data){
-        res.json(common.pretty(true, 10001, '')); 
-      });
-    } else{
-      res.json(common.pretty(false, 10000, ''));
-    }
   });
 
 module.exports = router;
