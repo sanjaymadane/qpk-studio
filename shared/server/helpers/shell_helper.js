@@ -88,7 +88,8 @@ module.exports = {
         replacement: "QPKG_NAME=" + options.qpkg_name,
         paths: [config.projects_path + '' + options.qpkg_name + '/qpkg.cfg', 
             config.projects_path + '' + options.qpkg_name + '/package_routines', 
-            config.projects_path + '' + options.qpkg_name + '/shared/app.conf'],
+            config.projects_path + '' + options.qpkg_name + '/shared/app.conf',
+            config.projects_path + '' + options.qpkg_name + '/shared/'+ options.qpkg_name + '.sh'],
         recursive: true,
         silent: true,
       });
