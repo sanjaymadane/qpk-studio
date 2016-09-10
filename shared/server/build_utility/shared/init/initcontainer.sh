@@ -1,9 +1,9 @@
 #!/bin/sh
 #QPKG_NAME=
 
-QPKG_PATH=$(/sbin/getcfg $QPKG_NAME Install_Path -f $CONF)
+#QPKG_PATH=$(/sbin/getcfg $QPKG_NAME Install_Path -f $CONF)
 
-source $QPKG_PATH/app.conf
+source $1/app.conf
 
 CONF="/etc/config/qpkg.conf"
 CONTAINER_STATION_NAME="container-station"
