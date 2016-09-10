@@ -1,98 +1,131 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>
-<html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>
-<html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>
-<html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html lang="en" ng-app="myApp" class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Qcontactz</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" href="resources/img/ic_qcontacts_96.png"/>
-        <!-- <link href='//fonts.googleapis.com/css?family=Roboto:500,300,700,400' rel='stylesheet' type='text/css'/> -->
-        <link href="lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-        <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="lib/ng-dialog/css/ngDialog.min.css" rel="stylesheet" type="text/css"/>
-        <!--uncomment below code if want to implement grid column chooser-->
-<!--        <link href="lib/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
-        <link href="lib/jqGrid/css/addons/ui.multiselect.css" rel="stylesheet" type="text/css"/>-->
-        <link href="lib/ng-dialog/css/ngDialog-theme-default.css" rel="stylesheet" type="text/css"/>
-        <link rel="stylesheet" href="lib/bootstrap-vertical-tabs/bootstrap.vertical-tabs.min.css">
-        <link rel="stylesheet" href="lib/intl-tel-input/build/css/intlTelInput.css">
-        <link href="lib/jquery-ui/themes/base/all.css" rel="stylesheet" type="text/css"/>
-        <link href="lib/jqGrid/css/ui.jqgrid.css" rel="stylesheet" type="text/css"/>
-        <link href="lib/ng-img-crop/compile/minified/ng-img-crop.css" rel="stylesheet" type="text/css"/>
-        <link href="lib/angular-toasty/dist/angular-toasty.min.css" rel="stylesheet" type="text/css"/>
-        <!-- link for CSS when using the tree as a Dom element -->
-        <link rel="stylesheet" type="text/css" href="lib/angular-tree-control/css/tree-control.css">
-        <!-- link for CSS when using the tree as an attribute -->
-        <link rel="stylesheet" type="text/css" href="lib/angular-tree-control/css/tree-control-attribute.css">
-        <link href="resources/css/app.min.css" rel="stylesheet" type="text/css"/>
+<!doctype html>
+<html lang="en" ng-app="RDash">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <script src="lib/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
-    </head>
-    <body ng-controller="MainCtrl" ng-init="isUserLoggedIn()">        
-        <!--[if lt IE 7]>
-        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
-            your browser</a> to improve your experience.</p>
-        <![endif]-->
-        <div ng-include src="'views/partials/header.html'"></div>
-        <div ng-hide="is_login_page">
-            <div ng-include src="'views/partials/side-menu.html'"></div>            
+	<title>RDash AngularJS</title>
+  <!-- STYLES -->
+  <link rel="stylesheet" href="lib/css/main.min.css"/>
+  <!-- SCRIPTS -->
+  <script src="lib/js/main.min.js"></script>
+  <!-- Custom Scripts -->
+  <script type="text/javascript" src="js/dashboard.min.js"></script>
+</head>
+<body ng-controller="MasterCtrl">
+  <div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+      <ul class="sidebar">
+        <li class="sidebar-main">
+          <a ng-click="toggleSidebar()">
+            Dashboard
+            <span class="menu-icon glyphicon glyphicon-transfer"></span>
+          </a>
+        </li>
+        <li class="sidebar-title"><span>Project Builder</span></li>
+        <!-- <li class="sidebar-list">
+          <a href="#">Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
+        </li> -->
+        <li class="sidebar-list">
+          <a href="#">Create Project<span class="menu-icon fa fa-plus"></span></a>
+        </li>
+        <li class="sidebar-list">
+          <a href="#/list">Projects <span class="menu-icon fa fa-table"></span></a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <!-- <div class="col-xs-4">
+          <a href="https://github.com/rdash/rdash-angular" target="_blank">
+            Github
+          </a>
+        </div> -->
+        <div class="col-xs-4">
+          <a href="https://github.com/rdash/rdash-angular/blob/master/README.md" target="_blank">
+            About
+          </a>
         </div>
-        <span us-spinner="{radius:7, width:3, length: 6}" spinner-key="spinner-1"></span>
-        <div ng-view ></div>
+        <div class="col-xs-4">
+          <a href="#">
+            Support
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- End Sidebar -->
 
-        <!--Show Toaster-->
-        <toasty></toasty>
-        <!-- Libraries -->
-        <script src="lib/jquery/dist/jquery.min.js"></script>
-        <script src="lib/underscore/underscore-min.js"></script>
-        <script src="lib/jqGrid/js/i18n/grid.locale-en.js"></script>
-        <script src="lib/jqGrid/js/jquery.jqGrid.min.js"></script>
-        
+    <div id="content-wrapper">
+      <div class="page-content">
 
-        <script src="lib/angular/angular.min.js"></script>
-        <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="lib/angular-route/angular-route.min.js"></script>
-        <script src="lib/angular-animate/angular-animate.min.js"></script>
-        <script src="lib/angularjs-dropdown-multiselect/dist/angularjs-dropdown-multiselect.min.js"></script>
-        <script src="lib/angular-cookies/angular-cookies.min.js"></script>
-        <script src="lib/angular-translate/angular-translate.min.js"></script>
-        <script src="lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-        <script src="lib/intl-tel-input/build/js/intlTelInput.js"></script>
-        <script src="lib/intl-tel-input/build/js/utils.js"></script>
-        <script src="lib/ng-dialog/js/ngDialog.min.js"></script>
-        <script src="lib/socket.io-client/socket.io.js"></script>
-        <script src="lib/ng-file-upload/ng-file-upload.min.js"></script>
-        <script src="lib/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
-        <script src="lib/ng-img-crop/compile/minified/ng-img-crop.js"></script>
-        <script src="lib/spin.js/spin.min.js"></script>
-        <script src="lib/angular-spinner/angular-spinner.js"></script>
-        <script src="lib/angular-ui-form-validation/dist/angular-ui-form-validation.js"></script>
-        <script src="lib/angular-toasty/dist/angular-toasty.min.js"></script>
-        <script type="text/javascript" src="lib/angular-tree-control/angular-tree-control.js"></script>
-        <script type="text/javascript" src="lib/xml-to-json/xml.min.js"></script>
-        <script type="text/javascript" src="lib/moment/moment.js"></script>
-        <script type="text/javascript" src="lib/tooltipster.bundle.min.js"></script>
+        <!-- Header Bar -->
+        <div class="row header">
+          <div class="col-xs-12">
+            <div class="user pull-right">
+              <div class="item dropdown" uib-dropdown>
+                <a href="#" class="dropdown-toggle" uib-dropdown-toggle>
+                  <img src="img/avatar.jpg">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <li class="dropdown-header">
+                    Joe Bloggs
+                  </li>
+                  <li class="divider"></li>
+                  <li class="link">
+                    <a href="#">
+                      Profile
+                    </a>
+                  </li>
+                  <li class="link">
+                    <a href="#">
+                      Menu Item
+                    </a>
+                  </li>
+                  <li class="link">
+                    <a href="#">
+                      Menu Item
+                    </a>
+                  </li>
+                  <li class="divider"></li>
+                  <li class="link">
+                    <a href="#">
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="item dropdown" uib-dropdown>
+               <a href="#" class="dropdown-toggle" uib-dropdown-toggle>
+                  <i class="fa fa-bell-o"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <li class="dropdown-header">
+                    Notifications
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="#">Server Down!</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="meta">
+              <div class="page">
+                Dashboard
+              </div>
+              <div class="breadcrumb-links">
+                Home / Dashboard
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Header Bar -->
 
-        <!--uncomment below code if want to implement grid column chooser-->
-<!--        <script src="lib/jquery-ui/jquery-ui.min.js"></script>
-        <script src="lib/jqGrid/js/addons/ui.multiselect.js"></script>-->
+        <!-- Main Content -->
+        <div ui-view></div>
 
-        <!-- Application configuration -->
-        <script src="js/config.min.js"></script>
-
-        <!-- Application files -->
-        <script src="js/app.min.js"></script>
-        <script src="js/services.min.js"></script>
-        <script src="js/directives.min.js"></script>
-        <script src="js/controllers.min.js"></script>
-        <!--<div ng-include src="'views/partials/footer.html'"></div>-->
-    </body>
+      </div><!-- End Page Content -->
+    </div><!-- End Content Wrapper -->
+  </div><!-- End Page Wrapper -->
+</body>
 </html>
