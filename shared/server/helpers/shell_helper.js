@@ -1,7 +1,7 @@
 'use strict';
 
 var config = require('../config/config');
-var replace = 
+var replace = require('replace');
 module.exports = {
   create_project: function(options){
     return new Promise(function(resolve, reject){
@@ -77,6 +77,45 @@ module.exports = {
     });
   },
   replace_strings: function(options) {
-    
+    // var options = {
+    //   qpkg_name: req.body.name,
+    //   qpkg_display_name: req.body.name,
+    //   container_name: 'lamp_server',
+    //   container_port: 9011
+    // };
+    //qpkg.cfg
+    return new Promise(function(resolve, reject) {
+      replace({
+        regex: "#QPKG_NAME=",
+        replacement: "QPKG_NAME=" + options.qpkg_name,
+        paths: [config.projects_path + '' + options.qpkg_name + '/qpkg.cfg', 
+            config.projects_path + '' + options.qpkg_name + '/package_routines', 
+            config.projects_path + '' + options.qpkg_name + '/shared/app.conf'],
+        recursive: true,
+        silent: true,
+      });
+      replace({
+        regex: "#QPKG_DISPLAY_NAME=",
+        replacement: "QPKG_DISPLAY_NAME=" + options.qpkg_name,
+        paths: [config.projects_path + '' + options.qpkg_name + '/qpkg.cfg'],
+        recursive: true,
+        silent: true,
+      });
+      replace({
+        regex: "#QPKG_WEBUI=",
+        replacement: "QPKG_WEBUI=" + options.qpkg_name,
+        paths: [config.projects_path + '' + options.qpkg_name + '/qpkg.cfg'],
+        recursive: true,
+        silent: true,
+      });
+      replace({
+        regex: "#QPKG_SERVICE_PROGRAM=",
+        replacement: "QPKG_SERVICE_PROGRAM=" + options.qpkg_name + '.sh',
+        paths: [config.projects_path + '' + options.qpkg_name + '/qpkg.cfg'],
+        recursive: true,
+        silent: true,
+      });
+      resolve(true);
+    });
   }
 };
