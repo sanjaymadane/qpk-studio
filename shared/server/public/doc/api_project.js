@@ -1,0 +1,15 @@
+define({
+  "name": "QPKStudio",
+  "version": "0.1.0",
+  "description": "apiDoc basic example",
+  "title": "Custom apiDoc browser title",
+  "url": "https://172.17.30.95:9090",
+  "sampleUrl": false,
+  "apidoc": "0.2.0",
+  "generator": {
+    "name": "apidoc",
+    "time": "2016-09-02T07:07:00.608Z",
+    "url": "http://apidocjs.com",
+    "version": "0.16.1"
+  }
+});
