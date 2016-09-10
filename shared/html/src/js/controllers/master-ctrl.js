@@ -10,6 +10,7 @@ function MasterCtrl($scope, $cookieStore, $rootScope) {
      */
     var mobileView = 992;
     $scope.base_url = config.API_URL;
+    
     $scope.getWidth = function() {
         return window.innerWidth;
     };
