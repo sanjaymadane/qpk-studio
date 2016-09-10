@@ -1,7 +1,4 @@
 #!/bin/sh
-#QPKG_NAME=
-
-#QPKG_PATH=$(/sbin/getcfg $QPKG_NAME Install_Path -f $CONF)
 
 source $1/app.conf
 
@@ -10,10 +7,6 @@ CONTAINER_STATION_NAME="container-station"
 CONTAINER_STATION_PATH=$(/sbin/getcfg $CONTAINER_STATION_NAME Install_Path -f $CONF)
 mountlocaltime=" -v /etc/localtime:/etc/localtime"
 SYSTEM_MOUNT=" -v /etc/qbus:/etc/qbus -v $CONTAINER_STATION_PATH/usr/bin/.libs/qbus:/bin/qbus -v /var/run/qbus.sock:/var/run/qbus.sock "
-
-QPKG_PATH=$(/sbin/getcfg $QPKG_NAME Install_Path -f $CONF)
-echo $QPKG_PATH
-echo "I am inside init container"
 
 create_container() {
   name=$1
