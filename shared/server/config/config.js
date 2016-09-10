@@ -14,5 +14,7 @@ module.exports = {
   'server_username': 'admin',
   'server_password': 'admin',
   'media_base_path':  __dirname + '/../public/uploads/',
+  'build_utility_path':  __dirname + '/../build_utility/',
+  'projects_path':  __dirname + '/../projects/',
   'port': 9010
 };

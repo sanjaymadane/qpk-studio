@@ -1,6 +1,7 @@
 'use strict';
 
 var config = require('../config/config');
+var replace = 
 module.exports = {
   create_project: function(options){
     return new Promise(function(resolve, reject){
@@ -74,5 +75,8 @@ module.exports = {
       SSH.connect();
       resolve(true);
     });
+  },
+  replace_strings: function(options) {
+    
   }
 };

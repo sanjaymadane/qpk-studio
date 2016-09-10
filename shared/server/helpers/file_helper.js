@@ -359,8 +359,6 @@ module.exports = {
 		});		
 	},
 	unzipFile: function(path, dest){
-		path= "/home/murtuza/Programming/node/qdk/qpk/shared/server/public/uploads/1473488925703.zip";
-		dest = "/home/murtuza/Programming/node/qdk/qpk/shared/server/public/uploads";
 		var fstream = require('fstream');
 		return new Promise(function(resolve, reject){
 			var unzip = require('unzip');

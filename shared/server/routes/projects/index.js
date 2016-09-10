@@ -11,7 +11,9 @@ var express = require('express'),
     _ = require('underscore');
 // Load helpers
 var common = require('../../helpers/common_helper'),
-  shell = require('../../helpers/shell_helper');
+  shell = require('../../helpers/shell_helper'),
+  file_helper = require('../../helpers/file_helper'),
+  config = require('../../config/config');
 
 router.route('/')
   /**
@@ -85,9 +87,36 @@ router.route('/')
             if (err) {
               res.json(common.pretty(false, 10000, err));
             } else {
-              shell.create_project(req.body).then(function(resp){
+              // shell.create_project(req.body).then(function(resp){
+              //   res.json(common.pretty(true, 10001, project._id));
+              // }); 
+              var newpath = config.projects_path + req.body.name;
+              var filepath = config.build_utility_path;
+              var unzipPath = newpath + "/shared/html";
+
+              file_helper.copyFile(filepath, newpath)
+              .then(function(resolve){
+                return file_helper.unzipFile(req.body.file, unzipPath)
+              })
+              // .then(function(resolve){
+              //   return  file_helper.moveFile(unzipPath+'/wordpress', unzipPath);
+              // })
+              // .then(function(resolve){
+              //   return file_helper.deleteFilesOrDirectory(unzipPath+'/wordpress');
+              // })
+              .then(function() {
+                var options = {
+                  qpkg_name: req.body.name,
+                  qpkg_display_name: req.body.name,
+                  container_name: 'lamp_server',
+                  container_port: 9011
+                };
+
+                return shell.replace_strings(options);
+              })
+              .then(function(resp){
                 res.json(common.pretty(true, 10001, project._id));
-              });              
+              });             
             }
           }); 
         } else{ 
