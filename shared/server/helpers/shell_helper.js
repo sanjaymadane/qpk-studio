@@ -14,9 +14,7 @@ module.exports = {
         },
         commands:           [
             "cd /share/CACHEDEV1_DATA/.qpkg/qpk/server/", 
-            "mkdir projects",
             "cd projects",
-            "qbuild --create-env " + options.name,
             "cd " + options.name,
             "qbuild"
             ], //array() of command strings 

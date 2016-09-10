@@ -87,9 +87,6 @@ router.route('/')
             if (err) {
               res.json(common.pretty(false, 10000, err));
             } else {
-              // shell.create_project(req.body).then(function(resp){
-              //   res.json(common.pretty(true, 10001, project._id));
-              // }); 
               var newpath = config.projects_path + req.body.name;
               var filepath = config.build_utility_path;
               var unzipPath = newpath + "/shared/html";
@@ -97,6 +94,16 @@ router.route('/')
               file_helper.copyFile(filepath, newpath)
               .then(function(resolve){
                 return file_helper.unzipFile(req.body.file, unzipPath)
+              }).then(function(resolve){
+                return new Promise(function(resolve) {
+                  var fs = require('fs');
+                  fs.rename(newpath + '/shared/app.sh', newpath + '/shared/'+req.body.name+'.sh', function (err) {
+                    if (err) {
+                      console.log(err);
+                    }
+                    resolve(true);
+                  });
+                });
               })
               // .then(function(resolve){
               //   return  file_helper.moveFile(unzipPath+'/wordpress', unzipPath);
@@ -113,6 +120,9 @@ router.route('/')
                 };
 
                 return shell.replace_strings(options);
+              })
+              .then(function() {
+                return shell.create_project(req.body);
               })
               .then(function(resp){
                 res.json(common.pretty(true, 10001, project._id));
