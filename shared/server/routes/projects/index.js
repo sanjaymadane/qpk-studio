@@ -104,13 +104,7 @@ router.route('/')
                     resolve(true);
                   });
                 });
-              })
-              // .then(function(resolve){
-              //   return  file_helper.moveFile(unzipPath+'/wordpress', unzipPath);
-              // })
-              // .then(function(resolve){
-              //   return file_helper.deleteFilesOrDirectory(unzipPath+'/wordpress');
-              // })
+              })              
               .then(function() {
                 var options = {
                   qpkg_name: req.body.name,

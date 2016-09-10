@@ -2,7 +2,7 @@
 
 CONF=/etc/config/qpkg.conf
 
-#QPKG_NAME=""
+#QPKG_NAME=
 
 QPKG_PATH=$(/sbin/getcfg $QPKG_NAME Install_Path -f $CONF)
 

@@ -84,30 +84,36 @@ module.exports = {
       replace({
         regex: "#QPKG_NAME=",
         replacement: "QPKG_NAME=" + options.qpkg_name,
+        paths: [config.projects_path + '' + options.qpkg_name + '/shared/app.conf'],
+        recursive: true,
+        silent: true,
+      });
+      replace({
+        regex: "#QPKG_NAME=",
+        replacement: "QPKG_NAME=\"" + options.qpkg_name + "\"",
         paths: [config.projects_path + '' + options.qpkg_name + '/qpkg.cfg', 
             config.projects_path + '' + options.qpkg_name + '/package_routines', 
-            config.projects_path + '' + options.qpkg_name + '/shared/app.conf',
             config.projects_path + '' + options.qpkg_name + '/shared/'+ options.qpkg_name + '.sh'],
         recursive: true,
         silent: true,
       });
       replace({
         regex: "#QPKG_DISPLAY_NAME=",
-        replacement: "QPKG_DISPLAY_NAME=" + options.qpkg_name,
+        replacement: "QPKG_DISPLAY_NAME=\"" + options.qpkg_name + "\"",
         paths: [config.projects_path + '' + options.qpkg_name + '/qpkg.cfg'],
         recursive: true,
         silent: true,
       });
       replace({
         regex: "#QPKG_WEBUI=",
-        replacement: "QPKG_WEBUI=" + options.qpkg_name,
+        replacement: "QPKG_WEBUI=\"" + options.qpkg_name + "\"",
         paths: [config.projects_path + '' + options.qpkg_name + '/qpkg.cfg'],
         recursive: true,
         silent: true,
       });
       replace({
         regex: "#QPKG_SERVICE_PROGRAM=",
-        replacement: "QPKG_SERVICE_PROGRAM=" + options.qpkg_name + '.sh',
+        replacement: "QPKG_SERVICE_PROGRAM=\"" + options.qpkg_name + ".sh\"",
         paths: [config.projects_path + '' + options.qpkg_name + '/qpkg.cfg'],
         recursive: true,
         silent: true,
