@@ -285,7 +285,7 @@ module.exports = {
 			if(self.fileExists(oldPath)){
 				fse.copy(oldPath, newPath, function (err) {
 				  if (err) return reject(err)
-				  resolve({status: true})
+				  return resolve({status: true})
 				});
 			} else {
 				reject({status: false, message: 'file doesnt exists'})
@@ -362,14 +362,28 @@ module.exports = {
 		var fstream = require('fstream');
 		return new Promise(function(resolve, reject){
 			var unzip = require('unzip');
-			var readStream = fse.createReadStream(path);
-			var writeStream = fstream.Writer(dest);
+			//create the directory if not exists 
+			fse.mkdirpSync(dest);
+
+			var unzipExtractor = unzip.Extract({ path: dest });
+
+			unzipExtractor.on('error', function(err) {
+		      throw err;
+		    });
+    		unzipExtractor.on('close', function(){
+    			resolve({extract: dest});
+    		});
+
+			fse.createReadStream(path).pipe(unzipExtractor);
+			
+			// var readStream = fse.createReadStream(path);
+			// var writeStream = fstream.Writer(dest);
 			 
-			var unzipStream = readStream.pipe(unzip.Parse()).pipe(writeStream);
-			resolve({extract: dest});
-		 	unzipStream.on('finish', function () { 
-		 		resolve({extract: dest});
-		 	});	
+			// var unzipStream = readStream.pipe(unzip.Parse()).pipe(writeStream);
+			// resolve({extract: dest});
+		 // 	unzipStream.on('finish', function () { 
+		 // 		resolve({extract: dest});
+		 // 	});	
 		})		
 	}
 }

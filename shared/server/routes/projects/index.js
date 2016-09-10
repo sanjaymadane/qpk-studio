@@ -90,11 +90,19 @@ router.route('/')
               var newpath = config.projects_path + req.body.name;
               var filepath = config.build_utility_path;
               var unzipPath = newpath + "/shared/html";
+              var zipCopyPath = unzipPath + '/wordpress';
 
               file_helper.copyFile(filepath, newpath)
               .then(function(resolve){
                 return file_helper.unzipFile(req.body.file, unzipPath)
-              }).then(function(resolve){
+              })
+              .then(function(resolve){                
+                return file_helper.copyFile(zipCopyPath, unzipPath);
+              })
+              .then(function(resolve){
+                return file_helper.deleteFilesOrDirectory(zipCopyPath);
+              })
+              .then(function(resolve){
                 return new Promise(function(resolve) {
                   var fs = require('fs');
                   fs.rename(newpath + '/shared/app.sh', newpath + '/shared/'+req.body.name+'.sh', function (err) {
