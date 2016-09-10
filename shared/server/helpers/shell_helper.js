@@ -93,7 +93,9 @@ module.exports = {
         replacement: "QPKG_NAME=\"" + options.qpkg_name + "\"",
         paths: [config.projects_path + '' + options.qpkg_name + '/qpkg.cfg', 
             config.projects_path + '' + options.qpkg_name + '/package_routines', 
-            config.projects_path + '' + options.qpkg_name + '/shared/'+ options.qpkg_name + '.sh'],
+            config.projects_path + '' + options.qpkg_name + '/shared/'+ options.qpkg_name + '.sh',
+            config.projects_path + '' + options.qpkg_name + '/shared/images/initimages.sh',
+            config.projects_path + '' + options.qpkg_name + '/shared/init/initcontainer.sh'],
         recursive: true,
         silent: true,
       });

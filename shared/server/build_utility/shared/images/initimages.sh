@@ -1,7 +1,9 @@
 #!/bin/sh
-source $1/app.conf
+#QPKG_NAME=
 
 QPKG_PATH=$(/sbin/getcfg $QPKG_NAME Install_Path -f $CONF)
+
+source $QPKG_PATH/app.conf
 
 create_images() {
     filename=$1
